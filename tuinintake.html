@@ -574,27 +574,21 @@ function vulTuindelen(){
     el.appendChild(d);
   });
 }
-
-// ── KIES TUINDEEL ─────────────────────────────────────────────────────────────
 window.kiesTuindeel = function(i,el){
-  S.gekozenTuin=S.tuinen[i];
-  lSel.clearLayers();
-
-  // Highlight alle BGT tuinvlakken
-  if(S.tuinVlakken.length>0){
-    const selLayer=L.geoJSON({type:'FeatureCollection',features:S.tuinVlakken},{
-      style:{color:'#C8A96E',weight:3,fillColor:'#C8A96E',fillOpacity:.45}
+    S.gekozenTuin=S.tuinen[i];
+    lSel.clearLayers();
+    // FIX: Zoom naar adrespunt in plaats van alle BGT vlakken
+    const radius = Math.sqrt((S.perceel||200)/Math.PI) * 1.5;
+    const circle=L.circle([S.lat,S.lon],{
+        radius: Math.max(radius, 20),
+        color:'#C8A96E',weight:3,fillColor:'#C8A96E',fillOpacity:.35
     }).addTo(lSel);
-    try{kaart.fitBounds(selLayer.getBounds(),{padding:[60,60],maxZoom:20});}catch(e){}
-  } else {
-    // Fallback: toon cirkel rond adres
-    const circle=L.circle([S.lat,S.lon],{radius:15,color:'#C8A96E',weight:3,fillColor:'#C8A96E',fillOpacity:.35}).addTo(lSel);
-    kaart.fitBounds(circle.getBounds(),{padding:[40,40]});
-  }
-
-  document.querySelectorAll('.tuindeel').forEach((e,j)=>e.classList.toggle('actief',j===i));
-  document.getElementById('s3').style.display='block';
-  dots(3);
+    try{kaart.fitBounds(circle.getBounds(),{padding:[60,60],maxZoom:20});}catch(e){
+        kaart.setView([S.lat, S.lon], 19);
+    }
+    document.querySelectorAll('.tuindeel').forEach((e,j)=>e.classList.toggle('actief',j===i));
+    document.getElementById('s3').style.display='block';
+    dots(3);
 }
 
 // ── KIES STIJL ────────────────────────────────────────────────────────────────
