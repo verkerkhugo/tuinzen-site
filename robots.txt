@@ -1,0 +1,7 @@
+# Tuinzen.nl robots.txt
+
+User-agent: *
+Allow: /
+
+# Sitemap locatie
+Sitemap: https://tuinzen.nl/sitemap.xml
