@@ -1,0 +1,1440 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tuinzen — Jouw tuinontwerp</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --groen:       #4A6741;
+  --groen-mid:   #5C7F52;
+  --groen-licht: #8BAF82;
+  --groen-pale:  #EFF4EC;
+  --groen-deep:  #3D2B1A;
+  --aarde:       #8B5A2B;
+  --aarde-licht: #F5EDD6;
+  --aarde-mid:   #A06D38;
+  --wit:         #FAF8F4;
+  --donker:      #1A1208;
+  --grijs:       #7A6F65;
+  --grijs-licht: #A09890;
+  --lijn:        #E8E0D4;
+  --lijn-licht:  #F0E8DC;
+  --goud:        #C8A96E;
+  --aarde-deep:  #3D2B1A;
+  --radius-sm:   8px;
+  --radius-md:   12px;
+  --radius-lg:   20px;
+  --shadow-sm:   0 1px 8px rgba(45,80,22,0.08);
+  --shadow-md:   0 4px 24px rgba(45,80,22,0.12);
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--wit);
+  color: var(--donker);
+  min-height: 100vh;
+}
+
+/* ── HEADER ─────────────────────────────────── */
+header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(250,250,247,0.95);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--lijn);
+  padding: 0 40px;
+}
+
+.header-inner {
+  max-width: 960px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 60px;
+}
+
+.logo {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 20px;
+  color: var(--groen);
+  text-decoration: none;
+}
+.logo span { font-style: italic; }
+
+.header-acties {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.btn-outline {
+  padding: 8px 18px;
+  border: 1.5px solid var(--lijn);
+  border-radius: var(--radius-sm);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--grijs);
+  background: white;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.btn-outline:hover { border-color: var(--groen-mid); color: var(--groen); }
+
+.btn-cta {
+  padding: 9px 20px;
+  background: var(--aarde-deep);
+  border: none;
+  border-radius: var(--radius-sm);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: white;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.btn-cta:hover { background: var(--aarde); transform: translateY(-1px); }
+
+/* ── LAYOUT ──────────────────────────────────── */
+.pagina {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 40px 40px 100px;
+}
+
+/* ── HERO META ───────────────────────────────── */
+.hero-meta {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 28px;
+  flex-wrap: wrap;
+}
+
+.hero-titel { flex: 1; min-width: 260px; }
+
+.eyebrow {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--groen-mid);
+  margin-bottom: 8px;
+}
+
+h1 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(26px, 3.5vw, 38px);
+  font-weight: 700;
+  line-height: 1.15;
+  color: var(--donker);
+}
+h1 em { font-style: italic; color: var(--groen-mid); }
+
+.meta-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.meta-tag {
+  font-size: 12px;
+  font-weight: 500;
+  padding: 4px 12px;
+  border-radius: 20px;
+  border: 1px solid var(--lijn);
+  color: var(--grijs);
+  background: white;
+}
+
+.meta-tag.groen {
+  background: var(--groen-pale);
+  border-color: var(--groen-licht);
+  color: var(--groen);
+}
+
+.tier-badge {
+  flex-shrink: 0;
+  text-align: right;
+}
+
+.tier-gratis {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background: var(--aarde-licht);
+  border: 1px solid #E8D5A0;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--aarde);
+}
+
+.tier-betaald {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background: var(--groen-pale);
+  border: 1px solid var(--groen-licht);
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--groen);
+}
+
+/* ── RENDER BLOK ─────────────────────────────── */
+.render-wrap {
+  position: relative;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  margin-bottom: 32px;
+  background: var(--groen-pale);
+  aspect-ratio: 16/9;
+}
+
+.render-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: filter 0.4s;
+}
+
+.render-img.wazig { filter: blur(12px) brightness(0.85); transform: scale(1.05); }
+
+.render-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(26,48,9,0.55);
+  backdrop-filter: blur(2px);
+  text-align: center;
+  padding: 24px;
+}
+
+.render-overlay h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(20px, 3vw, 28px);
+  color: white;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+.render-overlay p {
+  font-size: 15px;
+  color: rgba(255,255,255,0.85);
+  margin-bottom: 20px;
+  max-width: 380px;
+  line-height: 1.55;
+}
+
+.render-betaal-btn {
+  padding: 13px 28px;
+  background: white;
+  color: var(--groen);
+  border: none;
+  border-radius: var(--radius-sm);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.render-betaal-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.2); }
+
+.render-badge {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  background: rgba(0,0,0,0.5);
+  color: white;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 4px 10px;
+  border-radius: 20px;
+  backdrop-filter: blur(4px);
+}
+
+.render-hd-badge {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  background: var(--aarde-deep);
+  color: white;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 4px 10px;
+  border-radius: 20px;
+}
+
+/* ── GRID LAYOUT ──────────────────────────────── */
+.content-grid {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 28px;
+  align-items: start;
+}
+
+@media (max-width: 720px) {
+  .content-grid { grid-template-columns: 1fr; }
+  .pagina { padding: 24px 20px 80px; }
+  header { padding: 0 20px; }
+}
+
+/* ── SECTIES ─────────────────────────────────── */
+.sectie {
+  background: white;
+  border: 1px solid var(--lijn);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.sectie-header {
+  padding: 20px 24px 16px;
+  border-bottom: 1px solid var(--lijn-licht);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.sectie-titel {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--donker);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sectie-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  background: var(--groen-pale);
+}
+
+.vergrendeld-label {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--aarde);
+  background: var(--aarde-licht);
+  border: 1px solid #E8D5A0;
+  padding: 3px 10px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.sectie-body { padding: 20px 24px; }
+
+/* ── PLANTKAARTEN ────────────────────────────── */
+.plant-kaart {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--lijn-licht);
+}
+.plant-kaart:last-child { border-bottom: none; padding-bottom: 0; }
+
+.plant-dot {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: var(--groen-pale);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.plant-info { flex: 1; }
+
+.plant-naam {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--donker);
+  margin-bottom: 2px;
+}
+
+.plant-lat {
+  font-size: 12px;
+  color: var(--grijs);
+  font-style: italic;
+  margin-bottom: 6px;
+}
+
+.plant-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.plant-tag {
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+.pt-bloei  { background: #FEF3C7; color: #92400E; }
+.pt-hoogte { background: var(--groen-pale); color: var(--groen); }
+.pt-grond  { background: #F0F0EC; color: var(--grijs); }
+
+.plant-prijs {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--groen-mid);
+  white-space: nowrap;
+  margin-top: 4px;
+  flex-shrink: 0;
+}
+
+/* Vergrendelde plantkaart */
+.plant-kaart.vergrendeld .plant-naam,
+.plant-kaart.vergrendeld .plant-lat { filter: blur(4px); user-select: none; }
+.plant-kaart.vergrendeld .plant-prijs { filter: blur(4px); }
+.plant-kaart.vergrendeld { opacity: 0.6; }
+
+/* ── KOSTEN BLOK ─────────────────────────────── */
+.kosten-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.kosten-item {
+  background: var(--lijn-licht);
+  border-radius: var(--radius-sm);
+  padding: 14px 16px;
+}
+
+.kosten-label {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--grijs-licht);
+  margin-bottom: 4px;
+}
+
+.kosten-waarde {
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--donker);
+}
+
+.kosten-totaal {
+  background: var(--groen-pale);
+  border: 1px solid var(--groen-licht);
+  border-radius: var(--radius-sm);
+  padding: 16px 20px;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.kosten-totaal-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--groen-mid);
+}
+
+.kosten-totaal-waarde {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 26px;
+  color: var(--groen);
+}
+
+/* ── SEIZOENSPLANNING ────────────────────────── */
+.seizoen-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.seizoen-item {
+  border-radius: var(--radius-sm);
+  padding: 14px;
+  border: 1px solid var(--lijn-licht);
+}
+
+.seizoen-naam {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.seizoen-tekst {
+  font-size: 13px;
+  color: var(--grijs);
+  line-height: 1.5;
+}
+
+.s-voor    { background: #FEF9EE; }
+.s-voor .seizoen-naam    { color: #B45309; }
+.s-zomer   { background: var(--groen-pale); }
+.s-zomer .seizoen-naam   { color: var(--groen); }
+.s-herfst  { background: #FFF7ED; }
+.s-herfst .seizoen-naam  { color: #C2410C; }
+.s-winter  { background: #EFF6FF; }
+.s-winter .seizoen-naam  { color: #1D4ED8; }
+
+/* ── TIPS ────────────────────────────────────── */
+.tip-item {
+  display: flex;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--lijn-licht);
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--grijs);
+}
+.tip-item:last-child { border-bottom: none; padding-bottom: 0; }
+
+.tip-nr {
+  width: 22px;
+  height: 22px;
+  background: var(--groen-pale);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--groen);
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+/* ── SIDEBAR ─────────────────────────────────── */
+.sidebar { position: sticky; top: 80px; }
+
+/* Betaal card */
+.betaal-card {
+  background: var(--aarde-deep);
+  border-radius: var(--radius-lg);
+  padding: 28px;
+  color: white;
+  margin-bottom: 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+.betaal-card::before {
+  content: '';
+  position: absolute;
+  top: -40px; right: -40px;
+  width: 180px; height: 180px;
+  background: rgba(255,255,255,0.04);
+  border-radius: 50%;
+}
+
+.betaal-eyebrow {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--groen-licht);
+  margin-bottom: 10px;
+}
+
+.betaal-titel {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 1.2;
+  margin-bottom: 16px;
+}
+
+.betaal-features {
+  list-style: none;
+  margin-bottom: 24px;
+}
+
+.betaal-features li {
+  font-size: 13px;
+  color: rgba(255,255,255,0.85);
+  padding: 6px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.betaal-features li:last-child { border-bottom: none; }
+
+.feature-check {
+  width: 18px;
+  height: 18px;
+  background: var(--aarde);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  flex-shrink: 0;
+}
+
+.betaal-prijs {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.betaal-bedrag {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 42px;
+  font-weight: 700;
+  color: white;
+}
+
+.betaal-periode {
+  font-size: 14px;
+  color: rgba(255,255,255,0.6);
+}
+
+.betaal-btn {
+  width: 100%;
+  padding: 14px;
+  background: white;
+  color: var(--groen-deep);
+  border: none;
+  border-radius: var(--radius-sm);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+.betaal-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.3); }
+
+.betaal-sub {
+  font-size: 11px;
+  color: rgba(255,255,255,0.5);
+  text-align: center;
+}
+
+/* Hovenier card */
+.hovenier-card {
+  background: white;
+  border: 1px solid var(--lijn);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  margin-bottom: 20px;
+}
+
+.hovenier-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.hovenier-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--groen-pale);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.hovenier-naam { font-size: 15px; font-weight: 500; }
+.hovenier-meta { font-size: 12px; color: var(--grijs); margin-top: 2px; }
+
+.sterren {
+  color: #F59E0B;
+  font-size: 13px;
+  margin-top: 4px;
+}
+
+.hovenier-desc {
+  font-size: 13px;
+  color: var(--grijs);
+  line-height: 1.6;
+  margin-bottom: 16px;
+}
+
+.hovenier-btn {
+  width: 100%;
+  padding: 12px;
+  background: var(--groen-pale);
+  color: var(--groen);
+  border: 1.5px solid var(--groen-licht);
+  border-radius: var(--radius-sm);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+.hovenier-btn:hover { background: var(--aarde-deep); color: white; border-color: var(--groen); }
+.hovenier-btn.vergrendeld { opacity: 0.5; cursor: not-allowed; }
+.hovenier-btn.vergrendeld:hover { background: var(--groen-pale); color: var(--groen); border-color: var(--groen-licht); }
+
+/* PDF knop */
+.pdf-btn {
+  width: 100%;
+  padding: 12px;
+  background: white;
+  color: var(--grijs);
+  border: 1.5px solid var(--lijn);
+  border-radius: var(--radius-sm);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+.pdf-btn:hover { border-color: var(--groen-mid); color: var(--groen); }
+.pdf-btn.vergrendeld { opacity: 0.45; cursor: not-allowed; }
+
+/* ── UNLOCK MODAL ────────────────────────────── */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(26,26,24,0.7);
+  backdrop-filter: blur(4px);
+  z-index: 200;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+}
+
+.modal-overlay.open {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.modal {
+  background: white;
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  padding: 32px 32px 40px;
+  width: 100%;
+  max-width: 520px;
+  transform: translateY(40px);
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.modal-overlay.open .modal { transform: translateY(0); }
+
+.modal-sluit {
+  position: absolute;
+  top: 16px; right: 20px;
+  background: none;
+  border: none;
+  font-size: 22px;
+  cursor: pointer;
+  color: var(--grijs);
+  line-height: 1;
+}
+
+.modal h3 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 24px;
+  margin-bottom: 6px;
+  color: var(--donker);
+}
+
+.modal p {
+  font-size: 14px;
+  color: var(--grijs);
+  line-height: 1.6;
+  margin-bottom: 24px;
+}
+
+.modal-features {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+.modal-feature {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--donker);
+}
+
+.modal-feature-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--groen-licht);
+  flex-shrink: 0;
+}
+
+.modal-prijs {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 20px;
+  padding: 16px 20px;
+  background: var(--groen-pale);
+  border-radius: var(--radius-sm);
+}
+
+.modal-bedrag {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 36px;
+  color: var(--groen);
+  font-weight: 700;
+}
+
+.modal-bedrag-sub {
+  font-size: 13px;
+  color: var(--grijs);
+  line-height: 1.4;
+}
+
+.modal-btn {
+  width: 100%;
+  padding: 15px;
+  background: var(--aarde-deep);
+  color: white;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-bottom: 10px;
+}
+.modal-btn:hover { background: var(--aarde); }
+
+.modal-veilig {
+  font-size: 12px;
+  color: var(--grijs-licht);
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+
+/* ── ANIMATIES ───────────────────────────────── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.fade-up {
+  animation: fadeUp 0.5s ease both;
+}
+
+.fade-up-1 { animation-delay: 0.05s; }
+.fade-up-2 { animation-delay: 0.12s; }
+.fade-up-3 { animation-delay: 0.20s; }
+.fade-up-4 { animation-delay: 0.28s; }
+
+/* ── UNLOCK EFFECT ───────────────────────────── */
+.vergrendeld-sectie {
+  position: relative;
+}
+
+.vergrendeld-sectie::after {
+  content: '🔒 Beschikbaar na betaling';
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(250,250,247,0.88);
+  backdrop-filter: blur(3px);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--grijs);
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+  cursor: pointer;
+}
+
+.vergrendeld-sectie:hover::after {
+  background: rgba(238,244,232,0.92);
+  color: var(--groen);
+  content: '🔒 Klik om te ontgrendelen';
+}
+</style>
+</head>
+<body>
+
+<!-- ── HEADER ── -->
+<header>
+  <div class="header-inner">
+    <a href="#" class="logo" style="font-family:'Cormorant Garamond',serif;font-weight:600;color:#3D2B1A;font-size:22px;letter-spacing:-0.3px;">Tuinzen</a>
+    <div class="header-acties">
+      <button class="btn-outline" onclick="window.print()">↓ Opslaan</button>
+      <button class="btn-cta" onclick="openModal('beplanting')">Kies je pakket</button>
+    </div>
+  </div>
+</header>
+
+<!-- ── PAGINA ── -->
+<div class="pagina">
+
+  <!-- Hero meta -->
+  <div class="hero-meta fade-up fade-up-1">
+    <div class="hero-titel">
+      <div class="eyebrow">Jouw tuinontwerp</div>
+      <h1>Een <em>biodiversiteits­tuin</em><br>in Utrecht</h1>
+      <div class="meta-tags">
+        <span class="meta-tag groen">47 m²</span>
+        <span class="meta-tag groen">Kleigrond</span>
+        <span class="meta-tag groen">Biodiversiteit</span>
+        <span class="meta-tag">Utrecht</span>
+        <span class="meta-tag">Budget €3.000</span>
+      </div>
+    </div>
+    <div class="tier-badge" id="tier-badge">
+      <div class="tier-gratis">⬡ Gratis preview</div>
+    </div>
+  </div>
+
+  <!-- Render -->
+  <div class="render-wrap fade-up fade-up-2" id="render-wrap">
+    <img class="render-img wazig" id="render-img"
+      src="https://images.unsplash.com/photo-1471194402529-8e0f5a675de6?w=1200&q=85"
+      alt="AI tuinontwerp render">
+    <div class="render-badge" id="render-badge">Gratis preview — vervaagd</div>
+
+    <!-- Overlay alleen in gratis tier -->
+    <div class="render-overlay" id="render-overlay">
+      <h2>Zie jouw tuin in HD</h2>
+      <p>Het volledige fotorealistische ontwerp, inclusief exacte beplanting en indeling, is beschikbaar in het betaalde pakket.</p>
+      <button class="render-betaal-btn" onclick="openModal('beplanting')">>
+        ✦ Bekijk pakketten
+      </button>
+    </div>
+  </div>
+
+  <!-- Content grid -->
+  <div class="content-grid">
+
+    <!-- ── LINKER KOLOM ── -->
+    <div>
+
+      <!-- Beplantingsplan -->
+      <div class="sectie fade-up fade-up-3">
+        <div class="sectie-header">
+          <div class="sectie-titel">
+            <div class="sectie-icon">🌿</div>
+            Beplantingsplan
+          </div>
+          <span id="planten-status"></span>
+        </div>
+        <div class="sectie-body">
+
+          <!-- Gratis: 2 planten zichtbaar -->
+          <div class="plant-kaart">
+            <div class="plant-dot">🦋</div>
+            <div class="plant-info">
+              <div class="plant-naam">Vlinderstruik</div>
+              <div class="plant-lat">Buddleja davidii</div>
+              <div class="plant-tags">
+                <span class="plant-tag pt-bloei">Bloei jul–sep</span>
+                <span class="plant-tag pt-hoogte">150–200 cm</span>
+                <span class="plant-tag pt-grond">✓ Kleigrond</span>
+              </div>
+            </div>
+            <div class="plant-prijs">€8–15</div>
+          </div>
+
+          <div class="plant-kaart">
+            <div class="plant-dot">🌸</div>
+            <div class="plant-info">
+              <div class="plant-naam">Echinacea</div>
+              <div class="plant-lat">Echinacea purpurea</div>
+              <div class="plant-tags">
+                <span class="plant-tag pt-bloei">Bloei jun–sep</span>
+                <span class="plant-tag pt-hoogte">60–80 cm</span>
+                <span class="plant-tag pt-grond">✓ Kleigrond</span>
+              </div>
+            </div>
+            <div class="plant-prijs">€4–8</div>
+          </div>
+
+          <!-- Vergrendelde planten (blur) -->
+          <div class="plant-kaart vergrendeld" onclick="openModal('beplanting')"> style="cursor:pointer">
+            <div class="plant-dot">🌼</div>
+            <div class="plant-info">
+              <div class="plant-naam">Lavendel — Bloei jun–aug</div>
+              <div class="plant-lat">Lavandula angustifolia</div>
+              <div class="plant-tags">
+                <span class="plant-tag pt-bloei">Bloei jun–aug</span>
+                <span class="plant-tag pt-hoogte">40–60 cm</span>
+              </div>
+            </div>
+            <div class="plant-prijs">€4–7</div>
+          </div>
+
+          <div class="plant-kaart vergrendeld" onclick="openModal('beplanting')"> style="cursor:pointer">
+            <div class="plant-dot">🌻</div>
+            <div class="plant-info">
+              <div class="plant-naam">Zonnehoed — Bloei jul–okt</div>
+              <div class="plant-lat">Rudbeckia fulgida</div>
+              <div class="plant-tags">
+                <span class="plant-tag pt-bloei">Bloei jul–okt</span>
+                <span class="plant-tag pt-hoogte">60–90 cm</span>
+              </div>
+            </div>
+            <div class="plant-prijs">€5–9</div>
+          </div>
+
+          <div class="plant-kaart vergrendeld" onclick="openModal('beplanting')"> style="cursor:pointer">
+            <div class="plant-dot">🌿</div>
+            <div class="plant-info">
+              <div class="plant-naam">Wilde Marjolein — Bodembedekker</div>
+              <div class="plant-lat">Origanum vulgare</div>
+            </div>
+            <div class="plant-prijs">€3–6</div>
+          </div>
+
+          <!-- Unlock hint -->
+          <div id="unlock-hint" style="margin-top:16px;padding:12px 16px;background:var(--aarde-licht);border:1px solid #E8D5A0;border-radius:var(--radius-sm);font-size:13px;color:var(--aarde);cursor:pointer;text-align:center;" onclick="openModal('beplanting')">>
+            🔒 + 4 planten beschikbaar in volledig pakket — klik om te ontgrendelen
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Kosten sectie -->
+      <div class="sectie fade-up fade-up-4">
+        <div class="sectie-header">
+          <div class="sectie-titel">
+            <div class="sectie-icon">💰</div>
+            Kosten­raming
+          </div>
+        </div>
+        <div class="sectie-body">
+          <div class="kosten-grid">
+            <div class="kosten-item">
+              <div class="kosten-label">Planten</div>
+              <div class="kosten-waarde">€350–550</div>
+            </div>
+            <div class="kosten-item">
+              <div class="kosten-label">Aanleg</div>
+              <div class="kosten-waarde">€1.950–2.400</div>
+            </div>
+            <div class="kosten-item">
+              <div class="kosten-label">Materialen</div>
+              <div class="kosten-waarde">€200–400</div>
+            </div>
+            <div class="kosten-item">
+              <div class="kosten-label">Ontwerp</div>
+              <div class="kosten-waarde" id="kosten-waarde">€49 / €99</div>
+            </div>
+          </div>
+          <div class="kosten-totaal">
+            <div class="kosten-totaal-label">Totaal schatting</div>
+            <div class="kosten-totaal-waarde">€2.650 – 3.500</div>
+          </div>
+          <p style="font-size:12px;color:var(--grijs-licht);margin-top:10px;line-height:1.5;">
+            Prijzen zijn indicatief op basis van gemiddelde markttarieven voor Utrecht (2025). Definitieve offerte via gekoppelde hovenier.
+          </p>
+        </div>
+      </div>
+
+      <!-- Seizoensplanning — vergrendeld -->
+      <div class="sectie vergrendeld-sectie" onclick="openModal('beplanting')"> style="cursor:pointer">
+        <div class="sectie-header">
+          <div class="sectie-titel">
+            <div class="sectie-icon">🍂</div>
+            Seizoens­planning
+          </div>
+          <span class="vergrendeld-label">🔒 Betaald</span>
+        </div>
+        <div class="sectie-body" style="filter:blur(3px);pointer-events:none;user-select:none;">
+          <div class="seizoen-grid">
+            <div class="seizoen-item s-voor">
+              <div class="seizoen-naam">🌱 Voorjaar</div>
+              <div class="seizoen-tekst">Plant vaste planten en heesters, leg terras aan, zaai bodembedekkers in.</div>
+            </div>
+            <div class="seizoen-item s-zomer">
+              <div class="seizoen-naam">☀️ Zomer</div>
+              <div class="seizoen-tekst">Echinacea, vlinderstruik en lavendel in volle bloei. Vlinders en bijen actief.</div>
+            </div>
+            <div class="seizoen-item s-herfst">
+              <div class="seizoen-naam">🍂 Herfst</div>
+              <div class="seizoen-tekst">Zonnehoed geeft kleur. Laat zaadpluimen staan voor vogels en winterinteresse.</div>
+            </div>
+            <div class="seizoen-item s-winter">
+              <div class="seizoen-naam">❄️ Winter</div>
+              <div class="seizoen-tekst">Grassen en zaadkoppen geven structuur. Vlinderstruik snoeien in maart.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Onderhoudstips — vergrendeld -->
+      <div class="sectie vergrendeld-sectie" onclick="openModal('beplanting')"> style="cursor:pointer">
+        <div class="sectie-header">
+          <div class="sectie-titel">
+            <div class="sectie-icon">🛠️</div>
+            Onderhoudstips
+          </div>
+          <span class="vergrendeld-label">🔒 Betaald</span>
+        </div>
+        <div class="sectie-body" style="filter:blur(3px);pointer-events:none;user-select:none;">
+          <div class="tip-item">
+            <div class="tip-nr">1</div>
+            <div>Snoei de vlinderstruik elk voorjaar hard terug (tot 30 cm) voor compacte groei en meer bloemen.</div>
+          </div>
+          <div class="tip-item">
+            <div class="tip-nr">2</div>
+            <div>Kleigrond droogt in zomer sterk uit — mulch rondom planten houdt vocht vast en voorkomt scheuren.</div>
+          </div>
+          <div class="tip-item">
+            <div class="tip-nr">3</div>
+            <div>Laat zaadkoppen van echinacea en rudbeckia tot in de winter staan — voedsel voor pimpelmees en koolmees.</div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- einde linker kolom -->
+
+    <!-- ── SIDEBAR ── -->
+    <div class="sidebar">
+
+      <!-- Betaal card (gratis tier) -->
+      <!-- Drie-tier prijsmodel -->
+      <div id="betaal-card" class="fade-up fade-up-3">
+
+        <!-- Tier header -->
+        <div style="font-size:13px;font-weight:500;color:var(--donker);margin-bottom:14px;">
+          Kies wat bij jou past
+        </div>
+
+        <!-- Tier 1: Beplantingsplan -->
+        <div class="tier-kaart" id="tier-beplanting" onclick="openModal('beplanting')" style="cursor:pointer;background:white;border:1.5px solid var(--lijn);border-radius:12px;padding:16px 18px;margin-bottom:10px;transition:all 0.2s;">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;">
+            <div>
+              <div style="font-size:14px;font-weight:500;color:var(--donker);margin-bottom:3px;">Beplantingsplan</div>
+              <div style="font-size:12px;color:var(--grijs);line-height:1.5;">Volledige plantenlijst op maat — jij plant zelf in</div>
+            </div>
+            <div style="text-align:right;flex-shrink:0;margin-left:12px;">
+              <div style="font-size:20px;font-weight:500;color:var(--donker);">€49</div>
+              <div style="font-size:11px;color:var(--grijs-licht);">eenmalig</div>
+            </div>
+          </div>
+          <div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:12px;">
+            <span style="font-size:11px;padding:2px 8px;border-radius:20px;background:var(--lijn-licht);color:var(--grijs);">Alle planten ontgrendeld</span>
+            <span style="font-size:11px;padding:2px 8px;border-radius:20px;background:var(--lijn-licht);color:var(--grijs);">Seizoensplan</span>
+            <span style="font-size:11px;padding:2px 8px;border-radius:20px;background:var(--lijn-licht);color:var(--grijs);">PDF download</span>
+            <span style="font-size:11px;padding:2px 8px;border-radius:20px;background:var(--lijn-licht);color:var(--grijs);">Planten bestellen</span>
+          </div>
+          <button style="width:100%;padding:10px;background:var(--aarde-deep);color:white;border:none;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;" onclick="openModal('beplanting')">
+            Kies beplantingsplan →
+          </button>
+        </div>
+
+                <!-- Tier 2: Volledig ontwerp — binnenkort -->
+        <div style="border:1.5px dashed #C8B8A8;border-radius:12px;padding:16px 18px;margin-bottom:10px;background:#F5EDD6;opacity:0.7;">
+          <div style="font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:#8B7355;margin-bottom:6px;">Binnenkort</div>
+          <div style="font-size:14px;font-weight:500;color:#5A4A3A;margin-bottom:3px;">Volledig ontwerp — €99</div>
+          <div style="font-size:12px;color:#8B7355;line-height:1.5;">HD render + beplantingsplan + hovenier-koppeling. Komt binnenkort beschikbaar.</div>
+        </div>
+
+        <!-- Vergelijk link -->
+        <div style="text-align:center;font-size:12px;color:var(--grijs-licht);margin-top:4px;">
+          Beide opties: eenmalig · iDEAL & creditcard · 30 dagen garantie
+        </div>
+
+        <!-- Hovenier card — alleen zichtbaar na volledig ontwerp -->
+        <div id="hovenier-card" style="display:none;margin-top:14px;background:var(--groen-pale);border:1px solid var(--groen-licht);border-radius:12px;padding:16px 18px;">
+          <div style="font-size:11px;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;color:var(--groen);margin-bottom:12px;">Hovenier in jouw regio</div>
+          <div class="hovenier-header">
+            <div class="hovenier-avatar">🌿</div>
+            <div>
+              <div class="hovenier-naam">Groen & Vakwerk Utrecht</div>
+              <div class="hovenier-meta">Gecertificeerd VHG-hovenier · Utrecht</div>
+              <div class="sterren">★★★★★ <span style="color:var(--grijs);font-size:11px">4.9 (47 reviews)</span></div>
+            </div>
+          </div>
+          <div class="hovenier-desc">Gespecialiseerd in duurzame tuinen. Werkt met klimaatadaptieve beplanting voor kleigrond.</div>
+          <button class="hovenier-btn" id="hovenier-btn" style="margin-top:10px;">
+            ✓ Contact opnemen
+          </button>
+        </div>
+
+      </div>
+
+      <!-- PDF download — vergrendeld -->
+      <button class="pdf-btn vergrendeld" id="pdf-btn" onclick="openModal('beplanting')">
+        📄 Download beplantingsplan (PDF)
+      </button>
+
+    </div>
+
+  </div><!-- einde content-grid -->
+
+</div><!-- einde pagina -->
+
+<!-- ── MODAL ── -->
+<div class="modal-overlay" id="modal" onclick="sluitModalBuiten(event)">
+  <div class="modal" style="position:relative;max-width:440px;">
+    <button class="modal-sluit" onclick="sluitModal()">×</button>
+
+    <!-- Beplantingsplan modal -->
+    <div id="modal-beplanting">
+      <h3>Beplantingsplan</h3>
+      <p style="font-size:13px;color:var(--grijs);margin-bottom:16px;line-height:1.6;">
+        Je ontvangt een volledig beplantingsplan op maat — afgestemd op jouw bodem, belichting en stijl. Jij plant zelf in op jouw eigen moment.
+      </p>
+      <div class="modal-features">
+        <div class="modal-feature"><div class="modal-feature-dot"></div>Alle planten ontgrendeld (9 stuks)</div>
+        <div class="modal-feature"><div class="modal-feature-dot"></div>Aantallen, plantafstanden & bodem</div>
+        <div class="modal-feature"><div class="modal-feature-dot"></div>Seizoensplan & bloeitijden</div>
+        <div class="modal-feature"><div class="modal-feature-dot"></div>Onderhoudstips per plant</div>
+        <div class="modal-feature"><div class="modal-feature-dot"></div>PDF download</div>
+        <div class="modal-feature"><div class="modal-feature-dot"></div>Planten direct bestellen</div>
+      </div>
+      <div class="modal-prijs">
+        <div class="modal-bedrag">€49</div>
+        <div class="modal-bedrag-sub">Eenmalig · iDEAL & creditcard<br>
+          <span style="color:var(--groen-mid);font-weight:500;">30 dagen niet-goed-geld-terug</span>
+        </div>
+      </div>
+      <button class="modal-btn" onclick="simuleerBetaling('beplanting')">
+        Betalen met iDEAL →
+      </button>
+      <div style="text-align:center;margin-top:10px;">
+        <a href="#" onclick="return false;" style="font-size:12px;color:var(--grijs-licht);text-decoration:none;cursor:default;">Volledig ontwerp — binnenkort beschikbaar</a>
+          Liever ook de render + hovenier? Bekijk volledig ontwerp (€99)
+        </a>
+      </div>
+      <div class="modal-veilig">🔒 Beveiligd via Stripe · SSL versleuteld</div>
+    </div>
+
+    
+        <div class="modal-feature"><div class="modal-feature-dot"></div>Volledig beplantingsplan (9 planten)</div>
+        <div class="modal-feature"><div class="modal-feature-dot"></div>Seizoensplan & onderhoudstips</div>
+        <div class="modal-feature"><div class="modal-feature-dot"></div>PDF download</div>
+        <div class="modal-feature"><div class="modal-feature-dot"></div>Hovenier-koppeling in jouw regio</div>
+        <div class="modal-feature"><div class="modal-feature-dot"></div>Planten direct bestellen</div>
+      </div>
+      <div class="modal-prijs">
+        <div class="modal-bedrag">€99</div>
+        <div class="modal-bedrag-sub">Eenmalig · iDEAL & creditcard<br>
+          <span style="color:var(--groen-mid);font-weight:500;">30 dagen niet-goed-geld-terug</span>
+        </div>
+      </div>
+      <button class="modal-btn" onclick="simuleerBetaling('volledig')">
+        ✦ Betalen met iDEAL →
+      </button>
+      <div style="text-align:center;margin-top:10px;">
+        <a href="#" onclick="openModal('beplanting');return false;" style="font-size:12px;color:var(--grijs-licht);text-decoration:underline;">
+          Liever alleen het beplantingsplan? (€49)
+        </a>
+      </div>
+      <div class="modal-veilig">🔒 Beveiligd via Stripe · SSL versleuteld</div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// ── TIER STATE ───────────────────────────────────────────────────────────────
+let betaaldTier = null; // 'beplanting' of 'volledig'
+
+const params = new URLSearchParams(window.location.search);
+if (params.get('betaald') === 'beplanting') ontgrendel('beplanting');
+if (params.get('betaald') === 'volledig')   ontgrendel('volledig');
+
+// ── MODAL ────────────────────────────────────────────────────────────────────
+function openModal(tier) {
+  // €99 volledig ontwerp tijdelijk uitgeschakeld
+  if (tier === 'volledig') return;
+  document.getElementById('modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  document.getElementById('modal-beplanting').style.display = 'block';
+  document.getElementById('modal-volledig').style.display   = 'none';
+}
+
+function sluitModal() {
+  document.getElementById('modal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function sluitModalBuiten(e) {
+  if (e.target === document.getElementById('modal')) sluitModal();
+}
+
+// ── SIMULEER BETALING ────────────────────────────────────────────────────────
+// In productie: Stripe Checkout session → webhook → ?betaald=beplanting of volledig
+function simuleerBetaling(tier) {
+  sluitModal();
+  setTimeout(() => ontgrendel(tier), 400);
+}
+
+// ── ONTGRENDEL PAGINA ────────────────────────────────────────────────────────
+function ontgrendel(tier) {
+  betaaldTier = tier;
+  const isVolledig = tier === 'volledig';
+
+  // 1. Render: altijd scherp na betaling
+  const img = document.getElementById('render-img');
+  if (img) img.classList.remove('wazig');
+  const overlay = document.getElementById('render-overlay');
+  if (overlay) overlay.style.display = 'none';
+  const badge = document.getElementById('render-badge');
+  if (badge) badge.outerHTML = `<div class="render-hd-badge">${isVolledig ? 'HD ontwerp' : 'Beplantingsplan'}</div>`;
+
+  // 2. Tier badge bovenaan
+  const tierBadge = document.getElementById('tier-badge');
+  if (tierBadge) tierBadge.innerHTML = isVolledig
+    ? '<div class="tier-betaald">✓ Volledig ontwerp</div>'
+    : '<div class="tier-betaald">✓ Beplantingsplan</div>';
+
+  // 3. Planten ontgrendelen
+  document.querySelectorAll('.plant-kaart.vergrendeld').forEach(el => {
+    el.classList.remove('vergrendeld');
+    el.style.cursor = 'default';
+  });
+  const hint = document.getElementById('unlock-hint');
+  if (hint) hint.remove();
+
+  const plantenStatus = document.getElementById('planten-status');
+  if (plantenStatus) plantenStatus.innerHTML =
+    '<span style="font-size:11px;color:var(--groen-mid);font-weight:500;">9 planten</span>';
+
+  // 4. Vergrendelde secties (seizoensplan, onderhoud)
+  document.querySelectorAll('.vergrendeld-sectie').forEach(el => {
+    el.classList.remove('vergrendeld-sectie');
+    el.style.cursor = 'default';
+    const body = el.querySelector('.sectie-body');
+    if (body) { body.style.filter = ''; body.style.pointerEvents = ''; body.style.userSelect = ''; }
+    const lbl = el.querySelector('.vergrendeld-label');
+    if (lbl) lbl.remove();
+  });
+
+  // 5. Betaalcard vervangen door bevestiging + upsell indien alleen beplanting
+  const card = document.getElementById('betaal-card');
+  if (card) {
+    if (isVolledig) {
+      card.innerHTML = `
+        <div style="text-align:center;padding:20px 0;">
+          <div style="font-size:32px;margin-bottom:10px;">✓</div>
+          <div style="font-size:16px;font-weight:500;color:var(--donker);margin-bottom:8px;">Volledig ontwerp ontgrendeld</div>
+          <p style="font-size:13px;color:var(--grijs);line-height:1.6;margin-bottom:16px;">
+            Je PDF en hovenier-koppeling worden per e-mail toegestuurd.
+          </p>
+          <button class="betaal-btn" onclick="downloadPdf()" style="width:100%;padding:11px;background:var(--aarde-deep);color:white;border:none;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;">
+            📄 Download PDF
+          </button>
+        </div>`;
+    } else {
+      // Beplantingsplan — toon upsell naar volledig
+      card.innerHTML = `
+        <div style="padding:4px 0 12px;">
+          <div style="text-align:center;margin-bottom:14px;">
+            <div style="font-size:24px;margin-bottom:6px;">✓</div>
+            <div style="font-size:15px;font-weight:500;color:var(--donker);margin-bottom:4px;">Beplantingsplan ontgrendeld</div>
+            <p style="font-size:12px;color:var(--grijs);line-height:1.5;">PDF wordt per e-mail toegestuurd.</p>
+          </div>
+          <button onclick="downloadPdf()" style="width:100%;padding:11px;background:var(--aarde-deep);color:white;border:none;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;margin-bottom:12px;">
+            📄 Download beplantingsplan PDF
+          </button>
+          <div style="background:var(--aarde-licht);border:1px solid var(--goud);border-radius:10px;padding:14px;">
+            <div style="font-size:12px;font-weight:500;color:var(--aarde);margin-bottom:6px;">HD render + hovenier-koppeling</div>
+            <p style="font-size:12px;color:var(--grijs);line-height:1.5;">Het volledig ontwerp met HD render en hovenier-koppeling komt binnenkort beschikbaar.</p>
+          </div>
+        </div>`;
+    }
+  }
+
+  // 6. Hovenier card — alleen tonen bij volledig
+  const hovCard = document.getElementById('hovenier-card');
+  if (hovCard && isVolledig) {
+    hovCard.style.display = 'block';
+    const hovBtn = document.getElementById('hovenier-btn');
+    if (hovBtn) {
+      hovBtn.classList.remove('vergrendeld');
+      hovBtn.textContent = '📅 Plan een tuingesprek';
+      hovBtn.onclick = () => alert('In productie: agenda koppeling met de hovenier opent hier.');
+    }
+  }
+
+  // 7. PDF knop activeren
+  const pdfBtn = document.getElementById('pdf-btn');
+  if (pdfBtn) {
+    pdfBtn.classList.remove('vergrendeld');
+    pdfBtn.onclick = downloadPdf;
+  }
+
+  // 8. Kosten display updaten
+  const kostenEl = document.querySelector('.kosten-waarde');
+  if (kostenEl) kostenEl.textContent = isVolledig ? '€99' : '€49';
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ── PDF DOWNLOAD ──────────────────────────────────────────────────────────────
+function downloadPdf() {
+  alert('In productie: PDF download start hier.\n\nDe server genereert een beplantingsplan-PDF met plantenlijst, seizoensplan en onderhoudstips.');
+}
+
+// ── KEYBOARD ──────────────────────────────────────────────────────────────────
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') sluitModal();
+});
+</script>
+
+</body>
+</html>

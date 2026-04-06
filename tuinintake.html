@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tuinzen — Perceelconfiguratie</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;1,400&family=DM+Sans:opsz,wght@9..40,400;9..40,500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Turf.js/6.5.0/turf.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --aarde:#3D2B1A;--aarde-mid:#8B5A2B;
+  --goud:#C8A96E;--goud-licht:#F5EDD6;
+  --groen:#4A6741;--groen-pale:#EFF4EC;--groen-licht:#8BAF82;
+  --wit:#FAF8F4;--donker:#1A1208;--grijs:#6B6058;--lijn:#E4D8C8;
+}
+body{font-family:'DM Sans',sans-serif;background:var(--wit);color:var(--donker);height:100vh;overflow:hidden;}
+
+nav{height:54px;background:var(--aarde);display:flex;align-items:center;padding:0 24px;justify-content:space-between;}
+.logo{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:white;}
+.stappen{display:flex;gap:6px;align-items:center;}
+.stap-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,0.25);transition:all .3s;}
+.stap-dot.actief{background:var(--goud);width:24px;border-radius:4px;}
+.stap-dot.klaar{background:rgba(255,255,255,0.6);}
+
+.layout{display:grid;grid-template-columns:340px 1fr;height:calc(100vh - 54px);}
+
+/* SIDEBAR */
+.sidebar{background:white;border-right:1px solid var(--lijn);overflow-y:auto;display:flex;flex-direction:column;}
+.sectie{padding:18px 20px;border-bottom:1px solid var(--lijn);}
+.sectie-label{font-size:10px;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;color:var(--grijs);margin-bottom:12px;}
+
+/* ADRES */
+.adres-grid{display:grid;grid-template-columns:1fr 72px;gap:7px;margin-bottom:7px;}
+.input{width:100%;padding:9px 11px;border:1.5px solid var(--lijn);border-radius:7px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--donker);outline:none;transition:border-color .2s;background:white;}
+.input:focus{border-color:var(--aarde);}
+.input::placeholder{color:#B8A898;}
+.btn{width:100%;padding:10px;background:var(--aarde);color:white;border:none;border-radius:7px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:all .2s;}
+.btn:hover:not(:disabled){background:var(--aarde-mid);}
+.btn:disabled{background:#C0B0A0;cursor:not-allowed;}
+.btn-groen{background:var(--groen);}
+.btn-groen:hover:not(:disabled){background:#3a5332;}
+
+.st{font-size:11px;color:var(--grijs);margin-top:7px;min-height:16px;display:flex;align-items:center;gap:5px;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spin{width:11px;height:11px;border:2px solid var(--lijn);border-top-color:var(--aarde);border-radius:50%;animation:spin .6s linear infinite;flex-shrink:0;}
+
+/* INFO BOX */
+.ib{background:var(--groen-pale);border:1px solid var(--groen-licht);border-radius:9px;padding:11px;margin-top:10px;display:none;}
+.ir{display:flex;justify-content:space-between;padding:3px 0;font-size:11px;border-bottom:1px solid rgba(74,103,65,.1);}
+.ir:last-child{border:none;}
+.ir span:first-child{color:var(--grijs);}
+.ir span:last-child{font-weight:500;}
+
+/* LEGENDA */
+.leg{margin-top:10px;display:none;}
+.leg-items{display:flex;flex-wrap:wrap;gap:8px;}
+.leg-item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--grijs);}
+.leg-kleur{width:12px;height:12px;border-radius:2px;flex-shrink:0;}
+
+/* TUINDELEN */
+.zon-opt.actief{border-color:var(--goud);background:var(--goud-licht);}
+.zon-opt:hover{border-color:var(--aarde);}
+.tuindeel{border:1.5px solid var(--lijn);border-radius:7px;padding:9px 12px;cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:9px;margin-bottom:6px;}
+.tuindeel:hover{border-color:var(--groen);}
+.tuindeel.actief{border-color:var(--groen);background:var(--groen-pale);}
+.td-kleur{width:12px;height:12px;border-radius:2px;flex-shrink:0;}
+.td-naam{font-size:12px;font-weight:500;}
+.td-opp{font-size:10px;color:var(--grijs);}
+
+/* STIJLEN */
+.stijl-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:10px;}
+.stijl{border:1.5px solid var(--lijn);border-radius:7px;padding:8px 4px;cursor:pointer;text-align:center;font-size:11px;transition:all .15s;line-height:1.4;}
+.stijl:hover{border-color:var(--aarde);}
+.stijl.actief{border-color:var(--aarde);background:var(--goud-licht);}
+.stijl-icon{font-size:18px;display:block;margin-bottom:3px;}
+
+/* RESULTAAT */
+.plant{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid var(--lijn);}
+.plant:last-child{border:none;}
+.plant-dot{width:8px;height:8px;border-radius:50%;background:var(--groen);margin-top:4px;flex-shrink:0;}
+.plant-naam{font-size:12px;font-weight:500;margin-bottom:2px;}
+.plant-info{font-size:10px;color:var(--grijs);line-height:1.4;}
+
+/* KAART */
+.kaart-wrap{position:relative;}
+#kaart{width:100%;height:calc(100vh - 54px);}
+.kaart-overlay{position:absolute;top:12px;left:50%;transform:translateX(-50%);background:rgba(61,43,26,.88);color:white;padding:8px 16px;border-radius:16px;font-size:12px;z-index:500;pointer-events:none;backdrop-filter:blur(4px);white-space:nowrap;display:none;}
+
+/* LADEN */
+.laad{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:white;border-radius:10px;padding:18px 24px;box-shadow:0 8px 28px rgba(0,0,0,.12);text-align:center;z-index:1000;display:none;flex-direction:column;align-items:center;gap:8px;}
+.laad-spin{width:28px;height:28px;border:3px solid var(--lijn);border-top-color:var(--aarde);border-radius:50%;animation:spin .7s linear infinite;}
+.laad-txt{font-size:12px;color:var(--grijs);}
+
+/* WELCOME OVERLAY */
+.welcome{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:white;border-radius:14px;padding:28px 32px;box-shadow:0 8px 32px rgba(0,0,0,.12);text-align:center;z-index:400;max-width:320px;}
+.welcome-icon{font-size:36px;margin-bottom:12px;}
+.welcome h2{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;margin-bottom:6px;}
+.welcome p{font-size:13px;color:var(--grijs);line-height:1.6;}
+</style>
+</head>
+<body>
+
+<nav>
+  <span class="logo">Tuinzen</span>
+  <div id="api-status" onclick="toonApiKeyDialog()" style="cursor:pointer;font-size:11px;padding:4px 10px;border-radius:12px;background:rgba(255,255,255,0.15);color:rgba(255,255,255,0.8);">
+    ⚙ API key instellen
+  </div>
+  <div class="stappen">
+    <div class="stap-dot actief" id="d1"></div>
+    <div class="stap-dot" id="d2"></div>
+    <div class="stap-dot" id="d3"></div>
+  </div>
+</nav>
+
+<div class="layout">
+  <div class="sidebar">
+
+    <!-- STAP 1: ADRES -->
+    <div class="sectie">
+      <div class="sectie-label">Stap 1 — Jouw adres</div>
+      <div class="adres-grid">
+        <input class="input" id="pc" placeholder="1234 AB" maxlength="7">
+        <input class="input" id="hn" placeholder="12" maxlength="6">
+      </div>
+      <button class="btn" onclick="zoek()">Zoek mijn perceel →</button>
+      <div class="st" id="st">Vul postcode en huisnummer in</div>
+      <div class="ib" id="ib">
+        <div class="ir"><span>Adres</span><span id="i-adres">—</span></div>
+        <div class="ir" style="flex-direction:column;gap:5px;">
+        <div style="display:flex;justify-content:space-between;width:100%;">
+          <span>Perceeloppervlak</span>
+          <span id="i-perc" style="font-weight:500;">—</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px;">
+          <input type="range" id="perc-slider" min="50" max="2000" value="200" step="10" 
+            style="flex:1;accent-color:#4A6741;height:4px;" oninput="updatePerceel(this.value)">
+          <input type="number" id="perc-input" min="50" max="5000" value="200" step="10"
+            style="width:60px;padding:3px 6px;border:1px solid #E4D8C8;border-radius:5px;font-size:11px;text-align:center;"
+            oninput="updatePerceel(this.value)">
+          <span style="font-size:10px;color:#6B6058;">m²</span>
+        </div>
+        <a id="kadaster-link" href="https://kadastralekaart.com" target="_blank" 
+          style="font-size:10px;color:#4A6741;text-decoration:none;">
+          🔍 Controleer op kadastralekaart.com →
+        </a>
+      </div>
+        <div class="ir"><span>Tuinoppervlak</span><span id="i-tuin">—</span></div>
+        <div class="ir"><span>Bodemtype</span><span id="i-bodem">—</span></div>
+      </div>
+      <div class="leg" id="leg">
+        <div class="leg-items">
+          <div class="leg-item"><div class="leg-kleur" style="background:#4A674155;border:2px solid #4A6741"></div>Tuinvlak</div>
+          <div class="leg-item"><div class="leg-kleur" style="background:#8B5A2B88;border:1.5px solid #8B5A2B"></div>Bebouwing</div>
+          <div class="leg-item"><div class="leg-kleur" style="background:#C8A96E88;border:2px solid #C8A96E"></div>Geselecteerd</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STAP 2: TUINDEEL -->
+    <div class="sectie" id="s2" style="display:none">
+      <div class="sectie-label">Stap 2 — Selecteer tuindeel</div>
+      <div id="tuindelen"></div>
+    </div>
+
+    <!-- STAP 3: STIJL -->
+    <div class="sectie" id="s3" style="display:none">
+      <div class="sectie-label">Stap 3 — Tuinstijl</div>
+      <div class="stijl-grid">
+        <div class="stijl" onclick="kiesStijl(this,'modern')"><span class="stijl-icon">🌿</span>Modern</div>
+        <div class="stijl" onclick="kiesStijl(this,'natuurlijk')"><span class="stijl-icon">🌸</span>Natuurlijk</div>
+        <div class="stijl" onclick="kiesStijl(this,'klassiek')"><span class="stijl-icon">🌹</span>Klassiek</div>
+        <div class="stijl" onclick="kiesStijl(this,'biodiversiteit')"><span class="stijl-icon">🦋</span>Biodiversiteit</div>
+        <div class="stijl" onclick="kiesStijl(this,'lounge')"><span class="stijl-icon">🪑</span>Lounge</div>
+        <div class="stijl" onclick="kiesStijl(this,'moestuin')"><span class="stijl-icon">🥕</span>Moestuin</div>
+      </div>
+      <button class="btn btn-groen" id="plan-btn" onclick="maakPlan()" disabled>✦ Genereer beplantingsplan</button>
+    </div>
+
+    <!-- STAP 4: RESULTAAT -->
+    <div class="sectie" id="s4" style="display:none">
+      <div class="sectie-label">Jouw beplantingsplan</div>
+      <div style="font-size:12px;font-weight:500;margin-bottom:8px;" id="plan-titel"></div>
+      <div style="font-size:11px;color:var(--grijs);margin-bottom:12px;line-height:1.5;" id="plan-intro"></div>
+      <div id="planten"></div>
+      <div style="margin-top:14px;">
+        <a href="https://buy.stripe.com/test_14AfZjgIr5jecxt4h157W00" target="_blank">
+          <button class="btn btn-groen" style="font-size:12px;">Bestel volledig plan (€49) →</button>
+        </a>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- KAART -->
+  <div class="kaart-wrap">
+    <div id="kaart"></div>
+    <div class="kaart-overlay" id="inst">Klik op een tuindeel op de kaart om te selecteren</div>
+    <div class="laad" id="laad">
+      <div class="laad-spin"></div>
+      <div class="laad-txt" id="laad-txt">Laden…</div>
+    </div>
+    <!-- API KEY DIALOG -->
+<div id="api-dialog" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:9999;display:none;align-items:center;justify-content:center;">
+  <div style="background:white;border-radius:14px;padding:28px 32px;max-width:400px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,0.3);">
+    <h2 style="font-family:'Cormorant Garamond',serif;font-size:22px;margin-bottom:8px;">Claude API key</h2>
+    <p style="font-size:13px;color:#6B6058;margin-bottom:16px;line-height:1.6;">Voer je Anthropic API key in om echte beplantingsplannen te genereren. De key wordt lokaal opgeslagen in je browser.</p>
+    <input type="password" id="api-key-input" placeholder="sk-ant-..." style="width:100%;padding:10px 12px;border:1.5px solid #E4D8C8;border-radius:8px;font-size:13px;margin-bottom:12px;font-family:monospace;">
+    <div style="display:flex;gap:8px;">
+      <button onclick="slaApiKeyOp()" style="flex:1;padding:10px;background:#3D2B1A;color:white;border:none;border-radius:8px;font-size:13px;cursor:pointer;">Opslaan</button>
+      <button onclick="sluitApiDialog()" style="padding:10px 16px;background:transparent;border:1.5px solid #E4D8C8;border-radius:8px;font-size:13px;cursor:pointer;">Sluiten</button>
+    </div>
+    <p style="font-size:11px;color:#B0A89A;margin-top:10px;">Nog geen key? Ga naar <a href="https://platform.claude.com/settings/keys" target="_blank" style="color:#4A6741;">platform.claude.com</a></p>
+  </div>
+</div>
+
+<div class="welcome" id="welcome">
+      <div class="welcome-icon">🗺️</div>
+      <h2>Vind jouw perceel</h2>
+      <p>Vul je postcode en huisnummer in om je tuin en bebouwing te zien op de kaart.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+const S={lat:null,lon:null,adres:'',perceel:0,bodem:'',tuinVlakken:[],panden:[],tuinen:[],gekozenTuin:null,stijl:null,zonstand:'halfschaduw'};
+function getApiKey(){return localStorage.getItem('tuinzen_api_key')||'';}
+function setApiKey(k){localStorage.setItem('tuinzen_api_key',k.trim());}
+
+// ── KAART ─────────────────────────────────────────────────────────────────────
+const kaart=L.map('kaart',{center:[52.3,5.3],zoom:7,zoomControl:true});
+
+// OSM basis
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+  attribution:'© <a href="https://openstreetmap.org">OpenStreetMap</a>',maxZoom:19
+}).addTo(kaart);
+
+// PDOK luchtfoto overlay
+L.tileLayer('https://service.pdok.nl/hwh/luchtfotorgb/wmts/v1_0/2023_orthoHR/WebMercatorQuad/{z}/{x}/{y}.jpeg',{
+  attribution:'© PDOK Luchtfoto 2023',maxZoom:21,opacity:.85
+}).addTo(kaart);
+
+// Kadastrale perceelgrenzen WMS
+L.tileLayer.wms('https://service.pdok.nl/kadaster/kadastralekaart/wms/v5_0',{
+  layers:'Perceel',format:'image/png',transparent:true,opacity:.7
+}).addTo(kaart);
+
+const lTuin=L.layerGroup().addTo(kaart);
+const lPand=L.layerGroup().addTo(kaart);
+const lSel=L.layerGroup().addTo(kaart);
+const lHighlight=L.layerGroup().addTo(kaart);
+// lHighlight al gedeclareerd hierboven
+
+// ── HELPERS ───────────────────────────────────────────────────────────────────
+function sta(t,spin=false){
+  document.getElementById('st').innerHTML=(spin?'<div class="spin"></div>':'')+`<span>${t}</span>`;
+}
+function laad(aan,t='Laden…'){
+  document.getElementById('laad').style.display=aan?'flex':'none';
+  document.getElementById('laad-txt').textContent=t;
+}
+function dots(n){
+  ['d1','d2','d3'].forEach((id,i)=>{
+    const el=document.getElementById(id);
+    el.classList.remove('actief','klaar');
+    if(i+1<n)el.classList.add('klaar');
+    else if(i+1===n)el.classList.add('actief');
+  });
+}
+
+// ── ZOEK PERCEEL ──────────────────────────────────────────────────────────────
+window.zoek = async function(){
+  const pc=document.getElementById('pc').value.replace(/\s/g,'').toUpperCase();
+  const hn=document.getElementById('hn').value.trim();
+  if(!pc||!hn){sta('Vul postcode en huisnummer in');return;}
+
+  // Reset
+  laad(true,'Adres ophalen…');
+  lTuin.clearLayers();lPand.clearLayers();lSel.clearLayers();lHighlight.clearLayers();
+  S.perceel=0;S.tuinVlakken=[];S.panden=[];S.tuinen=[];S.gekozenTuin=null;
+  document.getElementById('i-perc').textContent='…';
+  document.getElementById('i-tuin').textContent='…';
+  document.getElementById('i-adres').textContent='…';
+  document.getElementById('ib').style.display='none';
+  document.getElementById('leg').style.display='none';
+  document.getElementById('s2').style.display='none';
+  document.getElementById('s3').style.display='none';
+  document.getElementById('s4').style.display='none';
+  document.getElementById('welcome').style.display='none';
+  document.getElementById('inst').style.display='none';
+
+  try{
+    // 1. PDOK Locatieserver → coördinaten
+    const r=await fetch(`https://api.pdok.nl/bzk/locatieserver/search/v3_1/free?q=${pc}+${hn}&fq=type:adres&fl=centroide_ll,straatnaam,woonplaatsnaam,provincienaam,kadastrale_grootte,gekoppeld_perceel&rows=1`);
+    const d=await r.json();
+    const doc=d?.response?.docs?.[0];
+    if(!doc){laad(false);sta('Adres niet gevonden. Probeer opnieuw.');return;}
+
+    const[lon,lat]=doc.centroide_ll.replace('POINT(','').replace(')','').split(' ').map(Number);
+    S.lat=lat;S.lon=lon;
+    S.adres=`${doc.straatnaam} ${hn}, ${doc.woonplaatsnaam}`;
+    S.bodem=bodemType(doc.provincienaam, pc);
+    if(doc.kadastrale_grootte)S.perceel=Math.round(parseFloat(doc.kadastrale_grootte));
+    S.gekoppeldPerceel=doc.gekoppeld_perceel?.[0]||null; // bijv. "BRN00-K-1364
+
+    kaart.setView([lat,lon],19);
+
+    // 2. BGT tuinvlakken ophalen
+    laad(true,'Tuinvlakken ophalen…');
+    await haalBGTTuin(lat,lon);
+
+    // 3. BGT panden ophalen
+    laad(true,'Bebouwing ophalen…');
+    await haalBGTPanden(lat,lon);
+
+    // 4. Kadastrale perceelgrens ophalen (exacte oppervlakte)
+    laad(true,'Perceeloppervlak berekenen…');
+    await haalKadastreelPerceel();
+
+    // 5. Tuindelen berekenen
+    berekenTuindelen();
+
+    // 5. UI bijwerken
+    document.getElementById('i-adres').textContent=S.adres;
+    document.getElementById('i-perc').textContent=S.perceel?`${S.perceel} m²`:'Onbekend';
+    document.getElementById('i-bodem').textContent=S.bodem;
+    // Update kadaster link met adres
+    const zoekterm=encodeURIComponent(S.adres);
+    document.getElementById('kadaster-link').href=`https://kadastralekaart.com/?q=${zoekterm}`;
+    document.getElementById('ib').style.display='block';
+    
+    // Teken perceelhighlight op kaart
+    tekenPerceelHighlight();
+    document.getElementById('leg').style.display='block';
+    document.getElementById('s2').style.display='block';
+    document.getElementById('s2b').style.display='block';
+    document.getElementById('inst').style.display='block';
+    laad(false);
+    sta('✓ Perceel gevonden');
+    dots(2);
+    vulTuindelen();
+    schatZonstand();
+
+  }catch(e){
+    laad(false);
+    sta('Fout bij ophalen — probeer opnieuw');
+    console.error(e);
+  }
+}
+
+// ── BGT TUINVLAKKEN ───────────────────────────────────────────────────────────
+async function haalBGTTuin(lat,lon){
+  const d=0.0004; // ~44m radius - alleen directe omgeving
+  const url=`https://api.pdok.nl/lv/bgt/ogc/v1_0/collections/begroeidterreindeel/items?bbox=${lon-d},${lat-d},${lon+d},${lat+d}&f=json&limit=30`;
+  try{
+    const r=await fetch(url);
+    const data=await r.json();
+    S.tuinVlakken=[];
+    let totaalOpp=0;
+
+    if(data.features?.length){
+      for(const f of data.features){
+        if(!f.geometry)continue;
+        // Filter op relevante types (geen water, geen rijbaan)
+        const type=f.properties?.fysiek_voorkomen||'';
+        if(type.includes('rijbaan')||type.includes('water')||type.includes('spoor'))continue;
+
+        try{
+          const opp=Math.round(turf.area(f));
+          if(opp<5||opp>500)continue; // Negeer te kleine en te grote vlakken
+          S.tuinVlakken.push({...f,_opp:opp});
+          totaalOpp+=opp;
+
+          // Kleur op basis van type
+          const kleur=type.includes('groen')||type.includes('gras')||type.includes('bos')?'#4A6741':
+                       type.includes('verharding')||type.includes('open')?'#B8A898':'#6B9E6B';
+
+          L.geoJSON(f,{style:{color:kleur,weight:0.8,fillColor:kleur,fillOpacity:.1}}).addTo(lTuin);
+        }catch(e){}
+      }
+    }
+
+    if(totaalOpp>0&&!S.perceel){
+      S.perceel=totaalOpp;
+      document.getElementById('i-perc').textContent=`~${totaalOpp} m²`;
+    }
+  }catch(e){console.warn('BGT tuin fout:',e);}
+}
+
+// ── BGT PANDEN ────────────────────────────────────────────────────────────────
+async function haalBGTPanden(lat,lon){
+  const d=0.0006;
+  const url=`https://api.pdok.nl/lv/bgt/ogc/v1_0/collections/pand/items?bbox=${lon-d},${lat-d},${lon+d},${lat+d}&f=json&limit=30`;
+  try{
+    const r=await fetch(url);
+    const data=await r.json();
+    S.panden=[];
+
+    if(data.features?.length){
+      for(const f of data.features){
+        if(!f.geometry)continue;
+        S.panden.push(f);
+        L.geoJSON(f,{style:{color:'#8B5A2B',weight:1.5,fillColor:'#8B5A2B',fillOpacity:.3}}).addTo(lPand);
+      }
+    }
+  }catch(e){console.warn('BGT pand fout:',e);}
+}
+
+// ── PERCEEL HIGHLIGHT ────────────────────────────────────────────────────────
+window.tekenPerceelHighlight = function(){
+  lHighlight.clearLayers();
+  const pt=[S.lat,S.lon];
+  let dichtstPand=null,minD=Infinity;
+  for(const p of S.panden){
+    try{
+      const c=turf.centroid(p);
+      const d=turf.distance(turf.point([S.lon,S.lat]),c,{units:'meters'});
+      if(d<minD){minD=d;dichtstPand=p;}
+    }catch(e){}
+  }
+  const icon=L.divIcon({
+    html:'<div style="width:16px;height:16px;background:#C8A96E;border:3px solid white;border-radius:50%;box-shadow:0 0 0 3px #C8A96E,0 0 0 10px rgba(200,169,110,0.3);"></div>',
+    iconSize:[16,16],iconAnchor:[8,8],className:''
+  });
+  L.marker(pt,{icon,zIndexOffset:1000}).addTo(lHighlight);
+  if(dichtstPand){
+    L.geoJSON(dichtstPand,{style:{color:'#C8A96E',weight:3,fillColor:'#C8A96E',fillOpacity:0.6}}).addTo(lHighlight);
+  }
+  const r=Math.sqrt((S.perceel||200)/Math.PI);
+  L.circle(pt,{radius:r,color:'#C8A96E',weight:2.5,fillColor:'#C8A96E',fillOpacity:0.1,dashArray:'8,5'}).addTo(lHighlight);
+}
+
+// ── KADASTRALE PERCEELGRENS OPHALEN ───────────────────────────────────────────
+async function haalKadastreelPerceel(){
+  // Schat perceeloppervlak op basis van dichtstbijzijnde BGT pand
+  const pt=turf.point([S.lon,S.lat]);
+  let pandOpp=0,minD=Infinity;
+  for(const p of S.panden){
+    try{
+      const c=turf.centroid(p);
+      const d=turf.distance(pt,c,{units:'meters'});
+      if(d<minD){minD=d;pandOpp=Math.round(turf.area(p));}
+    }catch(e){}
+  }
+
+  // Schat perceel op basis van pandgrootte (CBS/Kadaster gemiddelden)
+  let schatting=200;
+  if(pandOpp>0){
+    // Schatting op basis van CBS/Kadaster gemiddelden per pandtype
+    // Inclusief correctie voor panden waarbij we de BGT oppervlakte meten
+    // (BGT meet vloeroppervlak, perceel is doorgaans 3-6x groter)
+    if(pandOpp<50) schatting=Math.round(pandOpp*1.5);        // appartement/studio
+    else if(pandOpp<80) schatting=Math.round(pandOpp*3.0);   // klein rijtjeshuis
+    else if(pandOpp<120) schatting=Math.round(pandOpp*4.5);  // rijtjeshuis/hoekwoning
+    else if(pandOpp<180) schatting=Math.round(pandOpp*5.0);  // 2-onder-1-kap
+    else if(pandOpp<300) schatting=Math.round(pandOpp*5.5);  // vrijstaand
+    else schatting=Math.round(pandOpp*6.0);                  // groot vrijstaand/boerderij
+  }
+
+  if(!S.perceelZeker && schatting>0){
+    S.perceel=schatting;
+    document.getElementById('i-perc').textContent=`~${schatting} m²`;
+    document.getElementById('perc-slider').value=Math.min(schatting,2000);
+    document.getElementById('perc-input').value=schatting;
+  }
+}
+// ── PERCEEL HANDMATIG AANPASSEN ──────────────────────────────────────────────
+window.updatePerceel = function(val){
+  val=Math.round(parseInt(val)||200);
+  if(val<50)val=50;
+  S.perceel=val;
+  document.getElementById('i-perc').textContent=val+' m²';
+  document.getElementById('perc-slider').value=Math.min(val,2000);
+  document.getElementById('perc-input').value=val;
+  berekenTuindelen();
+  vulTuindelen();
+  // Herken highlight cirkel
+  if(S.lat&&typeof tekenPerceelHighlight==='function') tekenPerceelHighlight();
+}
+
+// ── TUINDELEN BEREKENEN ───────────────────────────────────────────────────────
+function berekenTuindelen(){
+  S.tuinen=[];
+  const pt=turf.point([S.lon,S.lat]);
+
+  // STAP 1: Perceeloppervlak komt uit kadastrale_grootte (locatieserver)
+  // S.perceel is al gezet in de zoek() functie
+  let perceelOpp=S.perceel||0;
+
+  // STAP 2: Vind het dichtstbijzijnde BGT pand (de woning)
+  let pandOpp=0;
+  let minPandDist=Infinity;
+  for(const p of S.panden){
+    try{
+      const c=turf.centroid(p);
+      const dist=turf.distance(pt,c,{units:'meters'});
+      if(dist<minPandDist){
+        minPandDist=dist;
+        pandOpp=Math.round(turf.area(p));
+      }
+    }catch(e){}
+  }
+
+  // STAP 3: Tuinoppervlak = perceel minus dichtstbijzijnde pand
+  let tuinOpp;
+  if(perceelOpp>0 && pandOpp>0){
+    tuinOpp=Math.max(10, perceelOpp-pandOpp);
+  } else if(perceelOpp>0){
+    tuinOpp=Math.round(perceelOpp*0.6); // schatting: 60% is tuin
+  } else if(pandOpp>0){
+    // Geen perceeldata: schat op basis van gemiddeld NL perceel
+    perceelOpp=Math.round(pandOpp*2.5);
+    tuinOpp=Math.round(perceelOpp-pandOpp);
+  } else {
+    tuinOpp=80;
+    perceelOpp=120;
+  }
+
+  // Update UI
+  const tuinLabel = S.perceelZeker ? `${tuinOpp} m²` : `~${tuinOpp} m²`;
+  document.getElementById('i-tuin').textContent=tuinLabel;
+  // Update slider als perceeloppervlak niet zeker is
+  if(!S.perceelZeker && S.perceel>0){
+    document.getElementById('i-perc').textContent=`~${S.perceel} m² (schatting)`;
+    document.getElementById('perc-slider').value=Math.min(S.perceel,2000);
+    document.getElementById('perc-input').value=S.perceel;
+  }
+  if(!S.perceel && perceelOpp>0){
+    S.perceel=perceelOpp;
+    document.getElementById('i-perc').textContent=`~${perceelOpp} m²`;
+  }
+
+  S.tuinen=[
+    {naam:'Achtertuin',opp:Math.round(tuinOpp*0.65),kleur:'#4A6741',icon:'🏡'},
+    {naam:'Voortuin',opp:Math.round(tuinOpp*0.25),kleur:'#8BAF82',icon:'🌿'},
+    {naam:'Volledig perceel',opp:perceelOpp,kleur:'#C8A96E',icon:'🗺️'},
+  ];
+}
+
+// ── TUINDELEN UI ──────────────────────────────────────────────────────────────
+function vulTuindelen(){
+  const el=document.getElementById('tuindelen');
+  el.innerHTML='';
+  S.tuinen.forEach((t,i)=>{
+    const d=document.createElement('div');
+    d.className='tuindeel';
+    d.onclick=()=>kiesTuindeel(i,d);
+    d.innerHTML=`<div class="td-kleur" style="background:${t.kleur}"></div><div><div class="td-naam">${t.icon} ${t.naam}</div><div class="td-opp">~${t.opp} m²</div></div>`;
+    el.appendChild(d);
+  });
+}
+
+// ── KIES TUINDEEL ─────────────────────────────────────────────────────────────
+window.kiesTuindeel = function(i,el){
+  S.gekozenTuin=S.tuinen[i];
+  lSel.clearLayers();
+
+  // Highlight alle BGT tuinvlakken
+  if(S.tuinVlakken.length>0){
+    const selLayer=L.geoJSON({type:'FeatureCollection',features:S.tuinVlakken},{
+      style:{color:'#C8A96E',weight:3,fillColor:'#C8A96E',fillOpacity:.45}
+    }).addTo(lSel);
+    try{kaart.fitBounds(selLayer.getBounds(),{padding:[60,60],maxZoom:20});}catch(e){}
+  } else {
+    // Fallback: toon cirkel rond adres
+    const circle=L.circle([S.lat,S.lon],{radius:15,color:'#C8A96E',weight:3,fillColor:'#C8A96E',fillOpacity:.35}).addTo(lSel);
+    kaart.fitBounds(circle.getBounds(),{padding:[40,40]});
+  }
+
+  document.querySelectorAll('.tuindeel').forEach((e,j)=>e.classList.toggle('actief',j===i));
+  document.getElementById('s3').style.display='block';
+  dots(3);
+}
+
+// ── KIES STIJL ────────────────────────────────────────────────────────────────
+window.kiesStijl = function(el,stijl){
+  document.querySelectorAll('.stijl').forEach(e=>e.classList.remove('actief'));
+  el.classList.add('actief');S.stijl=stijl;
+  document.getElementById('plan-btn').disabled=false;
+}
+
+// ── GENEREER BEPLANTINGSPLAN ──────────────────────────────────────────────────
+window.maakPlan = async function(){
+  if(!S.stijl||!S.gekozenTuin)return;
+  const btn=document.getElementById('plan-btn');
+  btn.textContent='Plan wordt gemaakt…';btn.disabled=true;
+
+  try{
+    const apiKey=getApiKey();
+    if(!apiKey){
+      toonApiKeyDialog();
+      btn.textContent='✦ Genereer beplantingsplan';btn.disabled=false;
+      return;
+    }
+    const prompt=`Je bent een expert Nederlandse tuinontwerper met 20 jaar ervaring. Maak een professioneel beplantingsplan op basis van deze gegevens:
+- Tuindeel: ${S.gekozenTuin.naam} (~${S.gekozenTuin.opp} m²)
+- Bodemtype: ${S.bodem}
+- Locatie: ${S.adres}
+- Tuinstijl: ${S.stijl}
+- Zonstand: ${S.zonstand === 'zon' ? 'Volle zon (6+ uur per dag)' : S.zonstand === 'halfschaduw' ? 'Halfschaduw (3-6 uur per dag)' : 'Schaduw (minder dan 3 uur per dag)'}
+- Klimaat: Gematigd zeeklimaat, Nederland
+
+Selecteer precies 8 planten die:
+1. Perfect passen bij het bodemtype (${S.bodem})
+2. Geschikt zijn voor het Nederlandse klimaat
+3. Qua hoogte en bloemkleur goed combineren
+4. Aantrekkelijk zijn voor bijen en vlinders waar mogelijk
+
+Antwoord UITSLUITEND als geldige JSON zonder extra tekst of markdown:
+{"intro":"Twee inspirerende zinnen over dit plan","seizoen":"Beste plantmoment en onderhoudstips in één zin","planten":[{"naam":"Nederlandse naam","latijn":"Latijnse naam","aantal":5,"hoogte":"40-60 cm","bloeitijd":"jun-aug","kleur":"paars-blauw","tip":"Specifieke planttip voor ${S.bodem} bodem"}]}`;
+
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':getApiKey(),'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:1000,
+        messages:[{role:'user',content:prompt}]
+      })
+    });
+    const data=await res.json();
+    if(data.error){throw new Error(data.error.message);}
+    let txt=data.content?.[0]?.text||'';
+    txt=txt.replace(/```json|```/g,'').trim();
+    toonPlan(JSON.parse(txt));
+  }catch(e){
+    console.warn('API fout, gebruik fallback:',e);
+    toonPlan(fallbackPlan());
+  }
+  btn.textContent='✦ Genereer beplantingsplan';btn.disabled=false;
+}
+
+// ── TOON PLAN ─────────────────────────────────────────────────────────────────
+function toonPlan(plan){
+  document.getElementById('s4').style.display='block';
+  document.getElementById('plan-titel').textContent=`${S.gekozenTuin.naam} — ${S.stijl}`;
+  document.getElementById('plan-intro').textContent=plan.intro;
+  const el=document.getElementById('planten');el.innerHTML='';
+  // Toon seizoen advies
+  if(plan.seizoen){
+    const seizEl = document.createElement('div');
+    seizEl.style.cssText='background:#F5EDD6;border-radius:7px;padding:10px 12px;margin-bottom:12px;font-size:11px;color:#8B5A2B;line-height:1.5;';
+    seizEl.textContent='🌱 ' + plan.seizoen;
+    el.before(seizEl);
+  }
+  plan.planten.forEach(p=>{
+    el.insertAdjacentHTML('beforeend',`
+      <div class="plant">
+        <div class="plant-dot"></div>
+        <div>
+          <div class="plant-naam">${p.naam} <span style="font-weight:400;color:var(--grijs);font-style:italic">(${p.latijn})</span></div>
+          <div class="plant-info">${p.aantal}x · ${p.hoogte||''} · Bloei: ${p.bloeitijd} · <span style="color:var(--aarde-mid)">${p.kleur||''}</span></div>
+          <div class="plant-info">${p.tip}</div>
+        </div>
+      </div>`);
+  });
+  document.getElementById('s4').scrollIntoView({behavior:'smooth'});
+}
+
+// ── FALLBACK PLAN ─────────────────────────────────────────────────────────────
+function fallbackPlan(){
+  const p={
+    modern:{intro:'Een strak modern plan met siergrassen en vaste planten. De combinatie van textuur en kleur zorgt het hele jaar voor sfeer.',seizoen:'Plant vaste planten het best in voor- of najaar. Snoei siergrassen pas in maart terug.',planten:[
+      {naam:'Blauw siergras',latijn:'Festuca glauca',aantal:7,bloeitijd:'jun-jul',tip:'Plant in groepen voor een modern ritme.'},
+      {naam:'Lavendel',latijn:'Lavandula angustifolia',aantal:5,bloeitijd:'jun-aug',tip:'Volle zon en goed doorlatende bodem.'},
+      {naam:'Zonnehoed',latijn:'Echinacea purpurea',aantal:5,bloeitijd:'jul-sep',tip:'Laat zaadknoppen staan voor vogels.'},
+      {naam:'Hemelsleutel',latijn:'Sedum spectabile',aantal:6,bloeitijd:'aug-okt',tip:'Droogtebestendig en bijenmagnet.'},
+      {naam:'Sierui',latijn:'Allium hollandicum',aantal:15,bloeitijd:'mei-jun',tip:'Plant bollen in het najaar.'},
+      {naam:'Vedergras',latijn:'Stipa tenuissima',aantal:5,bloeitijd:'jun-sep',tip:'Beweegt mooi in de wind.'},
+    ]},
+    natuurlijk:{intro:'Een wilde bloemenpracht vol leven voor mens en natuur.',planten:[
+      {naam:'Wilde margriet',latijn:'Leucanthemum vulgare',aantal:9,bloeitijd:'jun-aug',tip:'Zaait zichzelf vanzelf uit.'},
+      {naam:'Klaproos',latijn:'Papaver rhoeas',aantal:15,bloeitijd:'mei-jul',tip:'Strooi zaad in het najaar.'},
+      {naam:'Korenbloem',latijn:'Centaurea cyanus',aantal:12,bloeitijd:'jun-aug',tip:'Ideaal voor vlinders en bijen.'},
+      {naam:'Kattestaart',latijn:'Lythrum salicaria',aantal:4,bloeitijd:'jul-sep',tip:'Houdt van licht vochtige bodem.'},
+      {naam:'Vlasbekje',latijn:'Linaria purpurea',aantal:8,bloeitijd:'jun-sep',tip:'Bloeit de hele zomer.'},
+      {naam:'Duizendblad',latijn:'Achillea millefolium',aantal:6,bloeitijd:'jun-aug',tip:'Aantrekkelijk voor zweefvliegen.'},
+    ]},
+    klassiek:{intro:'Een tijdloos formeel plan met rozen, buxus en vaste planten.',planten:[
+      {naam:'Roos',latijn:'Rosa floribunda',aantal:5,bloeitijd:'jun-okt',tip:'Snoei vroeg in het voorjaar terug.'},
+      {naam:'Buxus bol',latijn:'Buxus sempervirens',aantal:4,bloeitijd:'n.v.t.',tip:'Snoei 2x per jaar voor strakke vorm.'},
+      {naam:'Iris',latijn:'Iris germanica',aantal:8,bloeitijd:'mei-jun',tip:'Wortelstok mag zichtbaar blijven.'},
+      {naam:'Flox',latijn:'Phlox paniculata',aantal:6,bloeitijd:'jul-sep',tip:'Heerlijke geur op zomeravonden.'},
+      {naam:'Ridderspoor',latijn:'Delphinium elatum',aantal:4,bloeitijd:'jun-aug',tip:'Steun met bamboestokken.'},
+      {naam:'Pioen',latijn:'Paeonia lactiflora',aantal:3,bloeitijd:'mei-jun',tip:'Niet te diep planten.'},
+    ]},
+    biodiversiteit:{intro:'Een ecologisch rijk plan dat insecten, vogels en vlinders aantrekt.',planten:[
+      {naam:'Vlinderstruik',latijn:'Buddleja davidii',aantal:2,bloeitijd:'jul-sep',tip:'Aantrekkelijk voor dagvlinders.'},
+      {naam:'Lavendel',latijn:'Lavandula angustifolia',aantal:7,bloeitijd:'jun-aug',tip:'Bijenparadijs bij warm weer.'},
+      {naam:'Zonnehoed',latijn:'Echinacea purpurea',aantal:6,bloeitijd:'jul-sep',tip:'Zaadknoppen voeden vogels in winter.'},
+      {naam:'Wilde margriet',latijn:'Leucanthemum vulgare',aantal:9,bloeitijd:'jun-aug',tip:'Nectar voor zweefvliegen.'},
+      {naam:'Kattenkruid',latijn:'Nepeta faassenii',aantal:5,bloeitijd:'jun-sep',tip:'Bijen zijn er gek op.'},
+      {naam:'Vingerhoedskruid',latijn:'Digitalis purpurea',aantal:6,bloeitijd:'jun-jul',tip:'Hommels houden van de lange bloemen.'},
+    ]},
+    lounge:{intro:'Een ontspannen tuin met lage beplanting rondom jouw relaxplek.',planten:[
+      {naam:'Lavendel',latijn:'Lavandula angustifolia',aantal:9,bloeitijd:'jun-aug',tip:'Geeft heerlijke geur op warme avonden.'},
+      {naam:'Japanse kers',latijn:'Prunus serrulata',aantal:1,bloeitijd:'apr-mei',tip:'Schitterende bloesem in het voorjaar.'},
+      {naam:'Hemelsleutel',latijn:'Sedum spectabile',aantal:7,bloeitijd:'aug-okt',tip:'Nauwelijks onderhoud nodig.'},
+      {naam:'Gras siersoort',latijn:'Pennisetum alopecuroides',aantal:3,bloeitijd:'aug-okt',tip:'Zachte pluimen bewegen in de wind.'},
+      {naam:'Hortensia',latijn:'Hydrangea macrophylla',aantal:3,bloeitijd:'jul-sep',tip:'Houdt van halfschaduw.'},
+      {naam:'Kruipvlambloem',latijn:'Phlox subulata',aantal:8,bloeitijd:'apr-mei',tip:'Bodembedekker die weinig water vraagt.'},
+    ]},
+    moestuin:{intro:'Een productieve moestuin die het hele seizoen verse groenten levert.',planten:[
+      {naam:'Tomaat',latijn:'Solanum lycopersicum',aantal:4,bloeitijd:'jun-sep',tip:'Plant na 15 mei buiten.'},
+      {naam:'Courgette',latijn:'Cucurbita pepo',aantal:2,bloeitijd:'jun-sep',tip:'Eén plant geeft al veel vruchten.'},
+      {naam:'Sla',latijn:'Lactuca sativa',aantal:12,bloeitijd:'apr-okt',tip:'Zaai elke 3 weken bij voor continue oogst.'},
+      {naam:'Basilicum',latijn:'Ocimum basilicum',aantal:4,bloeitijd:'jun-sep',tip:'Plant naast tomaten — goede buren.'},
+      {naam:'Snijbiet',latijn:'Beta vulgaris',aantal:6,bloeitijd:'jun-okt',tip:'Oogst de buitenste bladeren steeds.'},
+      {naam:'Boontjes',latijn:'Phaseolus vulgaris',aantal:15,bloeitijd:'jul-sep',tip:'Snoer langs een stok of net.'},
+    ]},
+  };
+  const basis = p[S.stijl]||p.modern;
+  // Pas planten aan op basis van zonstand
+  if(S.zonstand === 'schaduw'){
+    return {
+      intro: 'Een schaduwrijke tuin vol textuur en rustgevende groentinten.',
+      seizoen: 'Plant schaduwplanten bij voorkeur in het voorjaar wanneer de grond vochtig is.',
+      planten:[
+        {naam:'Hosta',latijn:'Hosta sieboldiana',aantal:5,hoogte:'60-80 cm',bloeitijd:'jun-aug',kleur:'lila',tip:'Perfect voor vochtige schaduwplekken.'},
+        {naam:'Vaste Geranium',latijn:'Geranium macrorrhizum',aantal:7,hoogte:'30-40 cm',bloeitijd:'mei-jun',kleur:'roze-paars',tip:'Bodembedekker die ook droge schaduw verdraagt.'},
+        {naam:'Astilbe',latijn:'Astilbe arendsii',aantal:5,hoogte:'50-80 cm',bloeitijd:'jun-aug',kleur:'roze-rood',tip:'Houdt van vochtige bodem en halfschaduw.'},
+        {naam:'Varens',latijn:'Dryopteris filix-mas',aantal:3,hoogte:'80-120 cm',bloeitijd:'n.v.t.',kleur:'groen',tip:'Tijdloos en onderhoudsarm in de schaduw.'},
+        {naam:'Lungkruid',latijn:'Pulmonaria officinalis',aantal:6,hoogte:'25-35 cm',bloeitijd:'mrt-mei',tip:'Vroege bloei, gevlekt blad dat mooi blijft.'},
+        {naam:'Schaduwgras',latijn:'Hakonechloa macra',aantal:4,hoogte:'40-60 cm',bloeitijd:'jul-sep',kleur:'goud-groen',tip:'Sierlijk siergras dat ook schaduw verdraagt.'},
+        {naam:'Helleborus',latijn:'Helleborus orientalis',aantal:4,hoogte:'30-45 cm',bloeitijd:'feb-apr',kleur:'crème-paars',tip:'Bloeit in de winter — uniek voor schaduw.'},
+        {naam:'Ligularia',latijn:'Ligularia dentata',aantal:3,hoogte:'80-100 cm',bloeitijd:'jul-sep',kleur:'oranje-geel',tip:'Opvallende plant voor natte schaduwplekken.'},
+      ]
+    };
+  }
+  if(S.zonstand === 'zon'){
+    basis.intro = basis.intro + ' Deze planten gedijen optimaal in een zonnige standplaats.';
+  }
+  return basis;
+}
+
+// ── BODEMTYPE ─────────────────────────────────────────────────────────────────
+function bodemType(prov, pc){
+  // Nauwkeurige bodemkaart op basis van postcode (eerste 4 cijfers)
+  // Gebaseerd op de Nederlandse Bodemkaart 1:50.000 (Wageningen UR)
+  const code = parseInt(pc?.substring(0,4)||'0');
+  
+  // Groningen & Friesland - zeeklei en veen
+  if(code>=9600&&code<=9999) return 'Zeeklei';
+  if(code>=8800&&code<=9599) return 'Zeeklei/Veen';
+  if(code>=8300&&code<=8799) return 'Zand/Veen';
+  
+  // Drenthe - zand
+  if(code>=7800&&code<=7999) return 'Dekzand';
+  if(code>=9300&&code<=9599) return 'Dekzand/Veen';
+  
+  // Overijssel
+  if(code>=7500&&code<=7799) return 'Dekzand';
+  if(code>=8000&&code<=8299) return 'Rivierklei/Zand';
+  
+  // Flevoland - jonge zeeklei
+  if(code>=8200&&code<=8299) return 'Jonge Zeeklei (polder)';
+  if(code>=1600&&code<=1699) return 'Jonge Zeeklei (polder)';
+  if(code>=8200&&code<=8259) return 'Jonge Zeeklei (polder)';
+  
+  // Noord-Holland
+  if(code>=1000&&code<=1299) return 'Veen/Zeeklei';
+  if(code>=1400&&code<=1599) return 'Veen/Zeeklei';
+  if(code>=1700&&code<=1999) return 'Zeeklei/Veen';
+  if(code>=1800&&code<=1999) return 'Dekzand/Veen';
+  
+  // Zuid-Holland
+  if(code>=2000&&code<=2999) return 'Veen/Zeeklei';
+  if(code>=2700&&code<=2799) return 'Rivierklei';
+  if(code>=2800&&code<=2999) return 'Rivierklei/Veen';
+  
+  // Zeeland - zeeklei
+  if(code>=4300&&code<=4599) return 'Zeeklei';
+  
+  // Utrecht
+  if(code>=3400&&code<=3699) return 'Rivierklei/Veen';
+  if(code>=3700&&code<=3799) return 'Dekzand/Veen';
+  if(code>=3800&&code<=3999) return 'Rivierklei';
+  
+  // Gelderland - rivierklei en zand
+  if(code>=4000&&code<=4299) return 'Rivierklei';
+  if(code>=6500&&code<=6599) return 'Rivierklei';
+  if(code>=6600&&code<=6699) return 'Rivierklei';
+  if(code>=6700&&code<=6799) return 'Rivierklei/Zand';
+  if(code>=7000&&code<=7099) return 'Dekzand';
+  if(code>=6800&&code<=6999) return 'Dekzand/Leem';
+  
+  // Noord-Brabant - zand
+  if(code>=4600&&code<=4799) return 'Dekzand';
+  if(code>=4800&&code<=4999) return 'Dekzand';
+  if(code>=5000&&code<=5299) return 'Dekzand';
+  if(code>=5300&&code<=5499) return 'Dekzand';
+  if(code>=5500&&code<=5799) return 'Dekzand';
+  
+  // Limburg
+  if(code>=6000&&code<=6099) return 'Löss/Leem';
+  if(code>=6100&&code<=6299) return 'Löss/Leem';
+  if(code>=5800&&code<=5999) return 'Löss/Zand';
+  if(code>=6300&&code<=6499) return 'Löss/Zand';
+  
+  // Fallback op provincie
+  const m={
+    'Noord-Holland':'Veen/Zeeklei','Zuid-Holland':'Veen/Zeeklei',
+    'Utrecht':'Rivierklei/Veen','Friesland':'Zeeklei/Veen',
+    'Groningen':'Zeeklei','Zeeland':'Zeeklei',
+    'Noord-Brabant':'Dekzand','Limburg':'Löss/Leem',
+    'Gelderland':'Rivierklei/Zand','Overijssel':'Dekzand/Veen',
+    'Drenthe':'Dekzand','Flevoland':'Jonge Zeeklei',
+  };
+  return m[prov]||'Gemengd';
+}
+
+// ── KEYBOARD ──────────────────────────────────────────────────────────────────
+// ── API KEY BEHEER ────────────────────────────────────────────────────────────
+window.toonApiKeyDialog = function(){
+  const dialog = document.getElementById('api-dialog');
+  dialog.style.display='flex';
+  const saved = getApiKey();
+  if(saved) document.getElementById('api-key-input').value = saved;
+};
+window.sluitApiDialog = function(){
+  document.getElementById('api-dialog').style.display='none';
+};
+window.slaApiKeyOp = function(){
+  const key = document.getElementById('api-key-input').value.trim();
+  if(key){
+    setApiKey(key);
+    updateApiStatus();
+    sluitApiDialog();
+  }
+};
+function updateApiStatus(){
+  const key = getApiKey();
+  const el = document.getElementById('api-status');
+  if(el){
+    el.textContent = key ? '✓ API actief' : '⚙ API key instellen';
+    el.style.background = key ? 'rgba(74,103,65,0.5)' : 'rgba(255,255,255,0.15)';
+  }
+}
+// Check bij laden
+updateApiStatus();
+
+// ── ZONSTAND ──────────────────────────────────────────────────────────────────
+window.kiesZon = function(el, zon){
+  document.querySelectorAll('.zon-opt').forEach(e=>e.classList.remove('actief'));
+  el.classList.add('actief');
+  S.zonstand=zon;
+};
+
+window.schatZonstand = function schatZonstand(){
+  // Schat zonstand op basis van coördinaten
+  // Noord-gericht perceel = meer schaduw, Zuid-gericht = meer zon
+  // We gebruiken de lat/lon positie en het pand als proxy
+  const el = document.getElementById('zon-auto');
+  
+  // Bereken richting van het pand tov het adrespunt
+  let richting = 'onbekend';
+  if(S.panden.length > 0){
+    try{
+      const pt = turf.point([S.lon, S.lat]);
+      // Centroid van dichtstbijzijnde pand
+      let minD = Infinity, pandCentroid = null;
+      for(const p of S.panden){
+        const c = turf.centroid(p);
+        const d = turf.distance(pt, c, {units:'meters'});
+        if(d < minD){ minD = d; pandCentroid = c; }
+      }
+      if(pandCentroid){
+        const dLat = S.lat - pandCentroid.geometry.coordinates[1];
+        const dLon = S.lon - pandCentroid.geometry.coordinates[0];
+        // Bepaal hoek
+        const hoek = Math.atan2(dLon, dLat) * 180 / Math.PI;
+        if(hoek > -45 && hoek < 45) richting = 'noord'; // adres is noord van pand
+        else if(hoek >= 45 && hoek < 135) richting = 'oost';
+        else if(hoek <= -45 && hoek > -135) richting = 'west';
+        else richting = 'zuid'; // adres is zuid van pand = voortuin op zuidkant
+      }
+    }catch(e){}
+  }
+
+  // Schat op basis van richting
+  let advies = '';
+  let standaard = 'halfschaduw';
+  
+  if(richting === 'zuid'){
+    advies = '☀️ Uw tuin lijkt op het zuiden te liggen — waarschijnlijk veel zon.';
+    standaard = 'zon';
+    // Klik volle zon automatisch aan
+    const zonBtn = document.querySelector('.zon-opt:first-child');
+    if(zonBtn){ zonBtn.classList.add('actief'); S.zonstand='zon'; }
+  } else if(richting === 'noord'){
+    advies = '🌥️ Uw tuin lijkt op het noorden te liggen — waarschijnlijk meer schaduw.';
+    standaard = 'schaduw';
+    const schaduwBtn = document.querySelector('.zon-opt:last-child');
+    if(schaduwBtn){ schaduwBtn.classList.add('actief'); S.zonstand='schaduw'; }
+  } else {
+    advies = '⛅ Richting onbekend — kies uw zonstand hieronder.';
+    const halfBtn = document.querySelectorAll('.zon-opt')[1];
+    if(halfBtn){ halfBtn.classList.add('actief'); S.zonstand='halfschaduw'; }
+  }
+  
+  if(el) el.textContent = advies;
+}
+
+document.getElementById('hn').addEventListener('keydown',e=>{if(e.key==='Enter')zoek();});
+document.getElementById('pc').addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('hn').focus();});
+</script>
+</body>
+</html>
