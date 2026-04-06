@@ -1,0 +1,1494 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tuinontwerp — Start je gratis schets</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --groen: #2D5016;
+    --groen-mid: #4A7C2F;
+    --groen-licht: #8BB87A;
+    --groen-pale: #EEF4E8;
+    --aarde: #8B6914;
+    --aarde-licht: #F5EDD6;
+    --wit: #FAFAF7;
+    --donker: #1A1A18;
+    --grijs: #6B6B65;
+    --lijn: #E0DDD4;
+    --radius: 12px;
+    --shadow: 0 2px 20px rgba(45,80,22,0.10);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--wit);
+    color: var(--donker);
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  header {
+    padding: 20px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--lijn);
+  }
+
+  .logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    color: var(--groen);
+    letter-spacing: -0.5px;
+  }
+  .logo span { font-style: italic; color: var(--groen-mid); }
+
+  .badge {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--groen);
+    background: var(--groen-pale);
+    border: 1px solid var(--groen-licht);
+    padding: 5px 12px;
+    border-radius: 20px;
+  }
+
+  /* ── PROGRESS BAR ── */
+  .progress-wrap {
+    padding: 0 40px;
+    background: white;
+    border-bottom: 1px solid var(--lijn);
+  }
+
+  .steps {
+    display: flex;
+    gap: 0;
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 16px 0;
+  }
+
+  .step {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    font-weight: 500;
+    color: #B0ADA4;
+    position: relative;
+  }
+
+  .step::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--lijn);
+    margin: 0 8px;
+  }
+  .step:last-child::after { display: none; }
+
+  .step-dot {
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    background: var(--lijn);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px;
+    font-weight: 600;
+    flex-shrink: 0;
+    transition: all 0.3s;
+  }
+
+  .step.active .step-dot { background: var(--groen); color: white; }
+  .step.active { color: var(--donker); }
+  .step.done .step-dot { background: var(--groen-licht); color: white; }
+  .step.done { color: var(--grijs); }
+
+  /* ── MAIN ── */
+  main {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 48px 40px 80px;
+  }
+
+  .screen { display: none; animation: fadeIn 0.35s ease; }
+  .screen.active { display: block; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── TYPOGRAPHY ── */
+  .eyebrow {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--groen-mid);
+    margin-bottom: 12px;
+  }
+
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(28px, 4vw, 40px);
+    font-weight: 700;
+    line-height: 1.15;
+    color: var(--donker);
+    margin-bottom: 12px;
+  }
+
+  h1 em {
+    font-style: italic;
+    color: var(--groen-mid);
+  }
+
+  .subtitle {
+    font-size: 16px;
+    color: var(--grijs);
+    line-height: 1.6;
+    margin-bottom: 36px;
+  }
+
+  /* ── FORM ELEMENTS ── */
+  .field { margin-bottom: 24px; }
+
+  label {
+    display: block;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--donker);
+    margin-bottom: 8px;
+  }
+
+  .label-hint {
+    font-weight: 400;
+    color: var(--grijs);
+    font-size: 12px;
+    margin-left: 6px;
+  }
+
+  .input-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  input[type="text"], input[type="number"], input[type="email"], select {
+    width: 100%;
+    padding: 13px 16px;
+    border: 1.5px solid var(--lijn);
+    border-radius: var(--radius);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    color: var(--donker);
+    background: white;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    outline: none;
+    -webkit-appearance: none;
+  }
+
+  input:focus, select:focus {
+    border-color: var(--groen-mid);
+    box-shadow: 0 0 0 3px rgba(74,124,47,0.12);
+  }
+
+  .input-verified {
+    position: relative;
+  }
+  .input-verified input { padding-right: 40px; }
+  .verified-icon {
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--groen-mid);
+    font-size: 16px;
+    display: none;
+  }
+
+  /* ── ADRES CARD ── */
+  .adres-card {
+    background: var(--groen-pale);
+    border: 1px solid var(--groen-licht);
+    border-radius: var(--radius);
+    padding: 16px 20px;
+    margin-top: 16px;
+    display: none;
+  }
+  .adres-card.zichtbaar { display: block; animation: fadeIn 0.3s ease; }
+
+  .adres-card-header {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--groen);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .adres-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 12px;
+  }
+
+  .adres-item label {
+    font-size: 11px;
+    color: var(--grijs);
+    margin-bottom: 2px;
+  }
+  .adres-item .value {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--donker);
+  }
+
+  /* ── FOTO UPLOAD ── */
+  .foto-upload {
+    border: 2px dashed var(--lijn);
+    border-radius: var(--radius);
+    padding: 36px 24px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    background: white;
+  }
+  .foto-upload:hover { border-color: var(--groen-mid); background: var(--groen-pale); }
+  .foto-upload.heeft-foto { border-style: solid; border-color: var(--groen-mid); }
+
+  .foto-upload input[type="file"] {
+    position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%;
+  }
+
+  .upload-icon { font-size: 32px; margin-bottom: 10px; }
+  .upload-tekst { font-size: 14px; color: var(--grijs); line-height: 1.5; }
+  .upload-tekst strong { color: var(--donker); }
+
+  .foto-preview {
+    width: 100%;
+    max-height: 240px;
+    object-fit: cover;
+    border-radius: 8px;
+    display: none;
+    margin-top: 12px;
+  }
+  .foto-preview.zichtbaar { display: block; }
+
+  /* ── STIJL KEUZE ── */
+  .stijl-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-top: 4px;
+  }
+
+  .stijl-kaart {
+    border: 2px solid var(--lijn);
+    border-radius: var(--radius);
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+  }
+  .stijl-kaart:hover { border-color: var(--groen-mid); transform: translateY(-2px); box-shadow: var(--shadow); }
+  .stijl-kaart.gekozen { border-color: var(--groen); }
+
+  .stijl-kaart input[type="radio"] { display: none; }
+
+  .stijl-kleur {
+    height: 72px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    position: relative;
+  }
+
+  .stijl-check {
+    position: absolute;
+    top: 6px; right: 6px;
+    width: 20px; height: 20px;
+    background: var(--groen);
+    border-radius: 50%;
+    color: white;
+    font-size: 12px;
+    display: none;
+    align-items: center;
+    justify-content: center;
+  }
+  .stijl-kaart.gekozen .stijl-check { display: flex; }
+
+  .stijl-label {
+    padding: 10px 12px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--donker);
+    border-top: 1px solid var(--lijn);
+    background: white;
+  }
+  .stijl-sub {
+    font-size: 11px;
+    color: var(--grijs);
+    font-weight: 400;
+    margin-top: 1px;
+  }
+
+  /* ── SLIDER ── */
+  .budget-display {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 12px;
+  }
+  .budget-getal {
+    font-family: 'Playfair Display', serif;
+    font-size: 32px;
+    color: var(--groen);
+  }
+  .budget-sub { font-size: 12px; color: var(--grijs); }
+
+  input[type="range"] {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 4px;
+    border-radius: 2px;
+    background: linear-gradient(to right, var(--groen-mid) 0%, var(--groen-mid) var(--pct, 25%), var(--lijn) var(--pct, 25%), var(--lijn) 100%);
+    outline: none;
+    cursor: pointer;
+    border: none;
+    padding: 0;
+  }
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: var(--groen);
+    border: 3px solid white;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.2);
+    cursor: pointer;
+  }
+
+  .budget-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: var(--grijs);
+    margin-top: 8px;
+  }
+
+  /* ── CHECKBOXES ── */
+  .check-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .check-kaart {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 14px;
+    border: 1.5px solid var(--lijn);
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: all 0.2s;
+    user-select: none;
+  }
+  .check-kaart:hover { border-color: var(--groen-licht); background: var(--groen-pale); }
+  .check-kaart.actief { border-color: var(--groen); background: var(--groen-pale); }
+  .check-kaart input { display: none; }
+
+  .check-box {
+    width: 18px; height: 18px;
+    border: 2px solid var(--lijn);
+    border-radius: 4px;
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px;
+    transition: all 0.15s;
+  }
+  .check-kaart.actief .check-box { background: var(--groen); border-color: var(--groen); color: white; }
+
+  .check-tekst { font-size: 13px; font-weight: 500; }
+  .check-emoji { font-size: 16px; flex-shrink: 0; }
+
+  /* ── BUTTONS ── */
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 15px 32px;
+    background: var(--groen);
+    color: white;
+    border: none;
+    border-radius: var(--radius);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    width: 100%;
+  }
+  .btn-primary:hover { background: var(--groen-mid); transform: translateY(-1px); box-shadow: 0 4px 16px rgba(45,80,22,0.25); }
+  .btn-primary:active { transform: translateY(0); }
+  .btn-primary:disabled { background: var(--grijs); cursor: not-allowed; transform: none; box-shadow: none; }
+
+  .btn-back {
+    background: none;
+    border: none;
+    color: var(--grijs);
+    font-size: 14px;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    padding: 8px 0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 32px;
+    transition: color 0.2s;
+  }
+  .btn-back:hover { color: var(--donker); }
+
+  /* ── API STATUS ── */
+  .api-status {
+    font-size: 12px;
+    color: var(--grijs);
+    margin-top: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 20px;
+  }
+  .spinner {
+    width: 12px; height: 12px;
+    border: 2px solid var(--lijn);
+    border-top-color: var(--groen-mid);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    display: none;
+  }
+  .spinner.actief { display: inline-block; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ── SAMENVATTING SCHERM ── */
+  .samenvatting-card {
+    background: var(--groen-pale);
+    border: 1px solid var(--groen-licht);
+    border-radius: 16px;
+    padding: 28px;
+    margin-bottom: 24px;
+  }
+
+  .sam-sectie { margin-bottom: 20px; }
+  .sam-sectie:last-child { margin-bottom: 0; }
+
+  .sam-label {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--groen-mid);
+    margin-bottom: 6px;
+  }
+  .sam-waarde {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--donker);
+  }
+  .sam-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 4px;
+  }
+  .sam-tag {
+    font-size: 12px;
+    padding: 4px 10px;
+    background: white;
+    border: 1px solid var(--groen-licht);
+    border-radius: 20px;
+    color: var(--groen);
+    font-weight: 500;
+  }
+
+  .foto-thumb {
+    width: 100%;
+    height: 160px;
+    object-fit: cover;
+    border-radius: 10px;
+    margin-top: 8px;
+    display: none;
+  }
+  .foto-thumb.zichtbaar { display: block; }
+
+  /* ── TECHNISCHE SECTIE ── */
+  .tech-sectie {
+    margin-top: 48px;
+    border-top: 1px solid var(--lijn);
+    padding-top: 40px;
+  }
+
+  .tech-sectie h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    margin-bottom: 8px;
+  }
+
+  .tech-sectie .ondertitel {
+    font-size: 14px;
+    color: var(--grijs);
+    margin-bottom: 28px;
+  }
+
+  .api-flow {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .api-stap {
+    display: grid;
+    grid-template-columns: 32px 1fr;
+    gap: 16px;
+    position: relative;
+    padding-bottom: 28px;
+  }
+  .api-stap:last-child { padding-bottom: 0; }
+  .api-stap:last-child .stap-lijn { display: none; }
+
+  .stap-nr {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px;
+    font-weight: 600;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+  }
+  .stap-lijn {
+    position: absolute;
+    left: 15px;
+    top: 32px;
+    width: 2px;
+    height: calc(100% - 32px);
+    background: var(--lijn);
+  }
+
+  .stap-inhoud { padding-top: 4px; }
+
+  .stap-naam {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--donker);
+    margin-bottom: 4px;
+  }
+  .stap-url {
+    font-size: 12px;
+    color: var(--groen-mid);
+    font-family: monospace;
+    background: var(--groen-pale);
+    padding: 3px 8px;
+    border-radius: 4px;
+    display: inline-block;
+    margin-bottom: 6px;
+  }
+  .stap-omschrijving {
+    font-size: 13px;
+    color: var(--grijs);
+    line-height: 1.6;
+  }
+  .stap-output {
+    font-size: 12px;
+    font-family: monospace;
+    background: #F0F0EC;
+    padding: 10px 14px;
+    border-radius: 8px;
+    margin-top: 8px;
+    color: #444;
+    line-height: 1.7;
+    overflow-x: auto;
+    white-space: pre;
+  }
+
+  /* stap kleuren */
+  .s1 .stap-nr { background: var(--groen-pale); color: var(--groen); }
+  .s2 .stap-nr { background: #EBF3FF; color: #2563EB; }
+  .s3 .stap-nr { background: #FFF7ED; color: #C2410C; }
+  .s4 .stap-nr { background: #F5F3FF; color: #7C3AED; }
+  .s5 .stap-nr { background: #ECFDF5; color: #059669; }
+  .s6 .stap-nr { background: var(--aarde-licht); color: var(--aarde); }
+
+  /* ── RESULTAAT LOADING ── */
+  .loading-scherm {
+    text-align: center;
+    padding: 60px 0;
+  }
+  .loading-ring {
+    width: 64px; height: 64px;
+    border: 4px solid var(--groen-pale);
+    border-top-color: var(--groen);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 24px;
+  }
+  .loading-tekst {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    color: var(--donker);
+    margin-bottom: 8px;
+  }
+  .loading-sub { font-size: 14px; color: var(--grijs); }
+  .loading-stap {
+    margin-top: 24px;
+    font-size: 13px;
+    color: var(--groen-mid);
+    font-weight: 500;
+    min-height: 20px;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 600px) {
+    header { padding: 16px 20px; }
+    .progress-wrap { padding: 0 20px; }
+    main { padding: 32px 20px 60px; }
+    .stijl-grid { grid-template-columns: repeat(2, 1fr); }
+    .adres-grid { grid-template-columns: 1fr 1fr; }
+    .check-grid { grid-template-columns: 1fr; }
+    .input-row { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">tuin<span>ai</span></div>
+  <div class="badge">✦ Gratis schets</div>
+</header>
+
+<div class="progress-wrap">
+  <div class="steps">
+    <div class="step active" id="s1">
+      <div class="step-dot">1</div>
+      <span>Adres</span>
+    </div>
+    <div class="step" id="s2">
+      <div class="step-dot">2</div>
+      <span>Tuin</span>
+    </div>
+    <div class="step" id="s3">
+      <div class="step-dot">3</div>
+      <span>Wensen</span>
+    </div>
+    <div class="step" id="s4">
+      <div class="step-dot">4</div>
+      <span>Schets</span>
+    </div>
+  </div>
+</div>
+
+<main>
+
+  <!-- ── STAP 1: ADRES ── -->
+  <div class="screen active" id="scherm-1">
+    <div class="eyebrow">Stap 1 van 3</div>
+    <h1>Waar ligt<br><em>jouw tuin?</em></h1>
+    <p class="subtitle">We halen automatisch je perceeldata op via het Kadaster — geen handmatig intekenen.</p>
+
+    <div class="field">
+      <label>Postcode & huisnummer</label>
+      <div class="input-row">
+        <div class="input-verified">
+          <input type="text" id="postcode" placeholder="1234 AB" maxlength="7" autocomplete="postal-code">
+          <span class="verified-icon" id="postcode-check">✓</span>
+        </div>
+        <input type="text" id="huisnummer" placeholder="12" maxlength="6">
+      </div>
+      <div class="api-status">
+        <div class="spinner" id="adres-spinner"></div>
+        <span id="adres-status"></span>
+      </div>
+    </div>
+
+    <div class="adres-card" id="adres-card">
+      <div class="adres-card-header">
+        ✓ Kadaster data gevonden
+      </div>
+      <div class="adres-grid">
+        <div class="adres-item">
+          <label>Straat</label>
+          <div class="value" id="r-straat">—</div>
+        </div>
+        <div class="adres-item">
+          <label>Woonplaats</label>
+          <div class="value" id="r-plaats">—</div>
+        </div>
+        <div class="adres-item">
+          <label>Perceeloppervlak</label>
+          <div class="value" id="r-perceel">—</div>
+        </div>
+        <div class="adres-item">
+          <label>Bodemtype</label>
+          <div class="value" id="r-bodem">—</div>
+        </div>
+        <div class="adres-item">
+          <label>Provincie</label>
+          <div class="value" id="r-provincie">—</div>
+        </div>
+        <div class="adres-item">
+          <label>Tuintype</label>
+          <div class="value" id="r-tuintype">—</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="field" style="margin-top:24px">
+      <label>E-mailadres <span class="label-hint">— voor je ontwerp</span></label>
+      <input type="email" id="email" placeholder="naam@email.nl" autocomplete="email">
+    </div>
+
+    <button class="btn-primary" id="btn-stap1" disabled onclick="naarScherm(2)">
+      Volgende — Foto's uploaden →
+    </button>
+  </div>
+
+  <!-- ── STAP 2: TUIN FOTO & STIJL ── -->
+  <div class="screen" id="scherm-2">
+    <button class="btn-back" onclick="naarScherm(1)">← Terug</button>
+    <div class="eyebrow">Stap 2 van 3</div>
+    <h1>Laat zien wat<br><em>je nu hebt</em></h1>
+    <p class="subtitle">Upload een foto van je huidige tuin, kies je stijl en stel je budget in.</p>
+
+    <div class="field">
+      <label>Foto van je tuin</label>
+      <div class="foto-upload" id="upload-zone">
+        <input type="file" id="foto-input" accept="image/*" onchange="fotoGeladen(this)">
+        <div class="upload-icon">📷</div>
+        <p class="upload-tekst">
+          <strong>Klik om een foto te uploaden</strong><br>
+          Of sleep een foto hierheen · JPG, PNG, HEIC
+        </p>
+      </div>
+      <img class="foto-preview" id="foto-preview" alt="Preview">
+    </div>
+
+    <div class="field">
+      <label>Welke stijl spreekt jou aan?</label>
+      <div class="stijl-grid">
+        <label class="stijl-kaart" id="stijl-modern" onclick="kiesStijl('modern', this)">
+          <input type="radio" name="stijl" value="modern">
+          <div class="stijl-kleur" style="background:#E8F0E8">
+            <span>🌿</span>
+            <div class="stijl-check">✓</div>
+          </div>
+          <div class="stijl-label">
+            Modern<br><span class="stijl-sub">Strak, groen</span>
+          </div>
+        </label>
+        <label class="stijl-kaart" id="stijl-natuurlijk" onclick="kiesStijl('natuurlijk', this)">
+          <input type="radio" name="stijl" value="natuurlijk">
+          <div class="stijl-kleur" style="background:#EEF4E2">
+            <span>🌸</span>
+            <div class="stijl-check">✓</div>
+          </div>
+          <div class="stijl-label">
+            Natuurlijk<br><span class="stijl-sub">Wild, bloeiend</span>
+          </div>
+        </label>
+        <label class="stijl-kaart" id="stijl-klassiek" onclick="kiesStijl('klassiek', this)">
+          <input type="radio" name="stijl" value="klassiek">
+          <div class="stijl-kleur" style="background:#F5EDD6">
+            <span>🌹</span>
+            <div class="stijl-check">✓</div>
+          </div>
+          <div class="stijl-label">
+            Klassiek<br><span class="stijl-sub">Formeel, rozen</span>
+          </div>
+        </label>
+        <label class="stijl-kaart" id="stijl-duurzaam" onclick="kiesStijl('duurzaam', this)">
+          <input type="radio" name="stijl" value="duurzaam">
+          <div class="stijl-kleur" style="background:#E2EEE8">
+            <span>🦋</span>
+            <div class="stijl-check">✓</div>
+          </div>
+          <div class="stijl-label">
+            Biodiversiteit<br><span class="stijl-sub">Bijen, inheems</span>
+          </div>
+        </label>
+        <label class="stijl-kaart" id="stijl-lounge" onclick="kiesStijl('lounge', this)">
+          <input type="radio" name="stijl" value="lounge">
+          <div class="stijl-kleur" style="background:#EEE8F4">
+            <span>🪑</span>
+            <div class="stijl-check">✓</div>
+          </div>
+          <div class="stijl-label">
+            Lounge<br><span class="stijl-sub">Terras, sfeer</span>
+          </div>
+        </label>
+        <label class="stijl-kaart" id="stijl-moestuin" onclick="kiesStijl('moestuin', this)">
+          <input type="radio" name="stijl" value="moestuin">
+          <div class="stijl-kleur" style="background:#F4F0E2">
+            <span>🥕</span>
+            <div class="stijl-check">✓</div>
+          </div>
+          <div class="stijl-label">
+            Moestuin<br><span class="stijl-sub">Eetbaar groen</span>
+          </div>
+        </label>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Budget</label>
+      <div class="budget-display">
+        <div class="budget-getal" id="budget-getal">€ 3.000</div>
+        <div class="budget-sub">inclusief planten en aanleg</div>
+      </div>
+      <input type="range" id="budget-slider" min="500" max="25000" step="500" value="3000"
+        oninput="updateBudget(this.value)" style="--pct: 10%">
+      <div class="budget-labels">
+        <span>€ 500</span>
+        <span>€ 5.000</span>
+        <span>€ 10.000</span>
+        <span>€ 25.000+</span>
+      </div>
+    </div>
+
+    <button class="btn-primary" id="btn-stap2" onclick="naarScherm(3)">
+      Volgende — Wensen invullen →
+    </button>
+  </div>
+
+  <!-- ── STAP 3: WENSEN ── -->
+  <div class="screen" id="scherm-3">
+    <button class="btn-back" onclick="naarScherm(2)">← Terug</button>
+    <div class="eyebrow">Stap 3 van 3</div>
+    <h1>Wat wil jij<br><em>in je tuin?</em></h1>
+    <p class="subtitle">Selecteer alles wat je wilt. Onze AI houdt rekening met je bodemtype en het NL klimaat.</p>
+
+    <div class="field">
+      <label>Onderhoudsniveau <span class="label-hint">— hoeveel tijd steek jij erin?</span></label>
+      <div class="check-grid">
+        <div class="check-kaart" onclick="kiesOnderhoud(this, 'laag')">
+          <span class="check-emoji">😌</span>
+          <div>
+            <div class="check-tekst">Zo min mogelijk</div>
+          </div>
+          <div class="check-box">✓</div>
+        </div>
+        <div class="check-kaart" onclick="kiesOnderhoud(this, 'gemiddeld')">
+          <span class="check-emoji">🌿</span>
+          <div>
+            <div class="check-tekst">Beetje tuinieren</div>
+          </div>
+          <div class="check-box">✓</div>
+        </div>
+        <div class="check-kaart" onclick="kiesOnderhoud(this, 'hoog')">
+          <span class="check-emoji">🌻</span>
+          <div>
+            <div class="check-tekst">Ik tuin graag</div>
+          </div>
+          <div class="check-box">✓</div>
+        </div>
+        <div class="check-kaart" onclick="kiesOnderhoud(this, 'seizoen')">
+          <span class="check-emoji">🍂</span>
+          <div>
+            <div class="check-tekst">Seizoensgebonden</div>
+          </div>
+          <div class="check-box">✓</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Extra wensen <span class="label-hint">— meerdere mogelijk</span></label>
+      <div class="check-grid" id="wensen-grid">
+        <div class="check-kaart" onclick="toggleWens(this, 'terras')">
+          <span class="check-emoji">☀️</span>
+          <div class="check-tekst">Terras</div>
+          <div class="check-box">✓</div>
+        </div>
+        <div class="check-kaart" onclick="toggleWens(this, 'speeltuin')">
+          <span class="check-emoji">🛝</span>
+          <div class="check-tekst">Speelruimte</div>
+          <div class="check-box">✓</div>
+        </div>
+        <div class="check-kaart" onclick="toggleWens(this, 'vijver')">
+          <span class="check-emoji">🐸</span>
+          <div class="check-tekst">Vijver</div>
+          <div class="check-box">✓</div>
+        </div>
+        <div class="check-kaart" onclick="toggleWens(this, 'privacy')">
+          <span class="check-emoji">🌳</span>
+          <div class="check-tekst">Privacy</div>
+          <div class="check-box">✓</div>
+        </div>
+        <div class="check-kaart" onclick="toggleWens(this, 'verlichting')">
+          <span class="check-emoji">💡</span>
+          <div class="check-tekst">Verlichting</div>
+          <div class="check-box">✓</div>
+        </div>
+        <div class="check-kaart" onclick="toggleWens(this, 'regenton')">
+          <span class="check-emoji">💧</span>
+          <div class="check-tekst">Regenton</div>
+          <div class="check-box">✓</div>
+        </div>
+        <div class="check-kaart" onclick="toggleWens(this, 'overkapping')">
+          <span class="check-emoji">⛱️</span>
+          <div class="check-tekst">Overkapping</div>
+          <div class="check-box">✓</div>
+        </div>
+        <div class="check-kaart" onclick="toggleWens(this, 'huisdieren')">
+          <span class="check-emoji">🐕</span>
+          <div class="check-tekst">Hondvriendelijk</div>
+          <div class="check-box">✓</div>
+        </div>
+      </div>
+    </div>
+
+    <button class="btn-primary" onclick="genereerSchets()">
+      ✦ Genereer mijn gratis AI-schets
+    </button>
+  </div>
+
+  <!-- ── LADEN ── -->
+  <div class="screen" id="scherm-laden">
+    <div class="loading-scherm">
+      <div class="loading-ring"></div>
+      <div class="loading-tekst">Je schets wordt gemaakt…</div>
+      <div class="loading-sub">Dit duurt zo'n 20–40 seconden</div>
+      <div class="loading-stap" id="laad-stap">Perceeldata verifiëren…</div>
+    </div>
+  </div>
+
+  <!-- ── SAMENVATTING (vóór generatie) ── -->
+  <div class="screen" id="scherm-resultaat">
+    <div class="eyebrow">Jouw ontwerp­profiel</div>
+    <h1>Klaar voor je<br><em>AI-schets</em></h1>
+    <p class="subtitle">Controleer je gegevens en druk op de knop. Je schets is binnen 30 seconden klaar.</p>
+
+    <div class="samenvatting-card">
+      <div class="sam-sectie">
+        <div class="sam-label">Locatie & perceel</div>
+        <div class="sam-waarde" id="sam-adres">—</div>
+        <div class="sam-tags" id="sam-geo-tags"></div>
+      </div>
+      <div class="sam-sectie">
+        <div class="sam-label">Stijl & budget</div>
+        <div class="sam-waarde" id="sam-stijl">—</div>
+      </div>
+      <div class="sam-sectie">
+        <div class="sam-label">Wensen</div>
+        <div class="sam-tags" id="sam-wensen"></div>
+      </div>
+      <div class="sam-sectie">
+        <div class="sam-label">Je huidige tuin</div>
+        <img class="foto-thumb" id="sam-foto" alt="Tuinfoto">
+        <div id="sam-geen-foto" style="font-size:13px;color:var(--grijs)">Geen foto geüpload — we werken met perceeldata</div>
+      </div>
+    </div>
+
+    <button class="btn-primary" onclick="naarScherm('laden'); startGeneratie()">
+      ✦ Start AI-generatie →
+    </button>
+  </div>
+
+  <!-- ── SCHETS RESULTAAT ── -->
+  <div class="screen" id="scherm-schets">
+    <div class="eyebrow">Jouw gratis AI-schets</div>
+    <h1>Zo kan jouw<br><em>tuin eruitzien</em></h1>
+    <p class="subtitle" id="schets-ondertitel">Op basis van jouw wensen en perceeldata.</p>
+
+    <!-- Render afbeelding -->
+    <div style="position:relative;margin-bottom:24px;">
+      <img id="schets-render" src="" alt="AI tuinschets"
+        style="width:100%;border-radius:16px;display:block;aspect-ratio:4/3;object-fit:cover;background:var(--groen-pale);">
+      <div id="schets-render-loading" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:var(--groen-pale);border-radius:16px;">
+        <div style="text-align:center">
+          <div class="loading-ring" style="width:40px;height:40px;border-width:3px;margin:0 auto 12px;"></div>
+          <div style="font-size:13px;color:var(--grijs)">Render laden…</div>
+        </div>
+      </div>
+      <!-- Gratis tier badge -->
+      <div style="position:absolute;top:12px;right:12px;background:rgba(0,0,0,0.55);color:white;font-size:11px;font-weight:500;padding:4px 10px;border-radius:20px;backdrop-filter:blur(4px);">
+        Gratis preview
+      </div>
+    </div>
+
+    <!-- Plantenlijst -->
+    <div style="margin-bottom:24px;">
+      <div style="font-size:13px;font-weight:500;color:var(--groen-mid);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:12px;">Aanbevolen planten</div>
+      <div id="schets-planten" style="display:flex;flex-direction:column;gap:8px;"></div>
+    </div>
+
+    <!-- Kostenraming -->
+    <div style="background:var(--aarde-licht);border:1px solid #E8D5A0;border-radius:12px;padding:20px 24px;margin-bottom:28px;">
+      <div style="font-size:11px;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;color:var(--aarde);margin-bottom:8px;">Globale kostenscope</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <div>
+          <div style="font-size:12px;color:var(--grijs);margin-bottom:2px;">Planten</div>
+          <div style="font-size:16px;font-weight:500;" id="schets-kosten-planten">€ 350 – 550</div>
+        </div>
+        <div>
+          <div style="font-size:12px;color:var(--grijs);margin-bottom:2px;">Aanleg</div>
+          <div style="font-size:16px;font-weight:500;" id="schets-kosten-aanleg">€ 2.000 – 3.000</div>
+        </div>
+      </div>
+      <div style="border-top:1px solid #E8D5A0;margin-top:12px;padding-top:12px;">
+        <div style="font-size:12px;color:var(--grijs);margin-bottom:2px;">Totaal (schatting)</div>
+        <div style="font-family:'Playfair Display',serif;font-size:24px;color:var(--aarde);" id="schets-kosten-totaal">€ 2.350 – 3.550</div>
+      </div>
+    </div>
+
+    <!-- Freemium gate -->
+    <div style="background:var(--groen);color:white;border-radius:16px;padding:28px;text-align:center;margin-bottom:20px;">
+      <div style="font-size:12px;opacity:0.75;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;">Volledig pakket</div>
+      <div style="font-family:'Playfair Display',serif;font-size:26px;margin-bottom:8px;">HD ontwerp + hovenier matching</div>
+      <div style="font-size:14px;opacity:0.85;margin-bottom:20px;line-height:1.6;">
+        HD render · Exacte plantenlijst met prijzen · Beplantingsplan PDF · Koppeling met gecertificeerde hovenier in jouw regio
+      </div>
+      <div style="display:flex;align-items:baseline;justify-content:center;gap:8px;margin-bottom:20px;">
+        <span style="font-family:'Playfair Display',serif;font-size:40px;font-weight:700;">€ 149</span>
+        <span style="font-size:14px;opacity:0.75;">eenmalig</span>
+      </div>
+      <button class="btn-primary" style="background:white;color:var(--groen);max-width:320px;"
+        onclick="alert('In productie: Stripe iDEAL checkout opent hier.')">
+        Bestel volledig ontwerp →
+      </button>
+    </div>
+
+    <button class="btn-back" onclick="naarScherm(3)" style="justify-content:center;width:100%;margin-bottom:0;">
+      ← Wensen aanpassen
+    </button>
+  </div>
+
+</main>
+
+<script>
+// ── STATE ──
+const state = {
+  postcode: '', huisnummer: '', email: '',
+  straat: '', plaats: '', provincie: '',
+  perceelGrootte: null, tuinOppervlak: null,
+  bodemtype: '', lat: null, lon: null,
+  stijl: '', budget: 3000, onderhoud: '',
+  wensen: [], fotoDataUrl: null
+};
+
+let adresTimer = null;
+
+// ── STAP NAVIGATIE ──
+function naarScherm(nr) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('scherm-' + nr).classList.add('active');
+  updateProgress(nr);
+  window.scrollTo(0, 0);
+}
+
+function updateProgress(nr) {
+  const nrMap = { 1: 1, 2: 2, 3: 3, 'laden': 4, 'resultaat': 4, 'schets': 4 };
+  const actief = nrMap[nr] || parseInt(nr);
+  [1,2,3,4].forEach(i => {
+    const el = document.getElementById('s' + i);
+    if (!el) return;
+    el.classList.remove('active','done');
+    if (i === actief) el.classList.add('active');
+    else if (i < actief) el.classList.add('done');
+  });
+}
+
+// ── ADRES OPZOEKEN ──
+document.getElementById('postcode').addEventListener('input', function() {
+  clearTimeout(adresTimer);
+  const pc = this.value.replace(/\s/g,'').toUpperCase();
+  const hn = document.getElementById('huisnummer').value.trim();
+  if (pc.length >= 6) adresTimer = setTimeout(() => zoekAdres(pc, hn), 600);
+});
+
+document.getElementById('huisnummer').addEventListener('input', function() {
+  clearTimeout(adresTimer);
+  const pc = document.getElementById('postcode').value.replace(/\s/g,'').toUpperCase();
+  if (pc.length >= 6 && this.value.trim()) adresTimer = setTimeout(() => zoekAdres(pc, this.value.trim()), 600);
+});
+
+document.getElementById('email').addEventListener('input', function() {
+  const geldig = this.value.includes('@') && this.value.includes('.');
+  state.email = geldig ? this.value : '';
+  checkStap1();
+});
+
+async function zoekAdres(postcode, huisnummer) {
+  if (!postcode || !huisnummer) return;
+  setStatus('Adres opzoeken…', true);
+  document.getElementById('adres-card').classList.remove('zichtbaar');
+  document.getElementById('postcode-check').style.display = 'none';
+
+  try {
+    // PDOK Locatieserver — gratis, geen API key
+    const url = `https://api.pdok.nl/bzk/locatieserver/search/v3_1/free?q=${postcode}+${huisnummer}&fq=type:adres&fl=centroide_ll,kadastrale_grootte,straatnaam,woonplaatsnaam,provincienaam,kadastrale_sectie,perceelnummer&rows=1`;
+    const res = await fetch(url);
+    const data = await res.json();
+
+    if (data.response?.docs?.length > 0) {
+      const doc = data.response.docs[0];
+      const [lat, lon] = (doc.centroide_ll || '').replace('POINT(','').replace(')','').split(' ').map(Number);
+
+      state.straat = doc.straatnaam || '';
+      state.plaats = doc.woonplaatsnaam || '';
+      state.provincie = doc.provincienaam || '';
+      state.perceelGrootte = doc.kadastrale_grootte || null;
+      state.lat = lat; state.lon = lon;
+      state.postcode = postcode; state.huisnummer = huisnummer;
+
+      // Bodemtype afleiden uit provincie (fallback voor demo; productiecode gebruikt WMS)
+      state.bodemtype = bodemtypeVoorProvincie(doc.provincienaam);
+
+      // Tuintype schatten op basis van perceelgrootte
+      const pg = doc.kadastrale_grootte;
+      const tuintype = pg < 60 ? 'Stadstuintje' : pg < 150 ? 'Gemiddelde tuin' : pg < 400 ? 'Grote tuin' : 'Landelijke tuin';
+
+      document.getElementById('r-straat').textContent = doc.straatnaam + ' ' + huisnummer;
+      document.getElementById('r-plaats').textContent = doc.woonplaatsnaam;
+      document.getElementById('r-perceel').textContent = pg ? pg + ' m²' : 'Onbekend';
+      document.getElementById('r-bodem').textContent = state.bodemtype;
+      document.getElementById('r-provincie').textContent = doc.provincienaam || '—';
+      document.getElementById('r-tuintype').textContent = tuintype;
+
+      document.getElementById('adres-card').classList.add('zichtbaar');
+      document.getElementById('postcode-check').style.display = 'block';
+      setStatus('');
+      checkStap1();
+    } else {
+      setStatus('Adres niet gevonden. Controleer postcode + huisnummer.');
+    }
+  } catch(e) {
+    setStatus('Verbindingsfout. Probeer opnieuw.');
+  }
+}
+
+function bodemtypeVoorProvincie(prov) {
+  if (!prov) return 'Onbekend';
+  const kaart = {
+    'Noord-Holland': 'Veengrond / Klei', 'Zuid-Holland': 'Veengrond / Klei',
+    'Utrecht': 'Veen / Rivierklei', 'Friesland': 'Zeeklei / Veen',
+    'Groningen': 'Zeeklei', 'Zeeland': 'Zeeklei',
+    'Noord-Brabant': 'Zandgrond', 'Limburg': 'Löss / Zand',
+    'Gelderland': 'Rivierklei / Zand', 'Overijssel': 'Zandgrond / Veen',
+    'Drenthe': 'Zandgrond / Veen', 'Flevoland': 'Jonge zeeklei',
+  };
+  return kaart[prov] || 'Gemengd';
+}
+
+function setStatus(tekst, laden) {
+  document.getElementById('adres-status').textContent = tekst;
+  document.getElementById('adres-spinner').classList.toggle('actief', !!laden);
+}
+
+function checkStap1() {
+  const ok = state.postcode && state.huisnummer && state.lat && state.email;
+  document.getElementById('btn-stap1').disabled = !ok;
+}
+
+// ── FOTO ──
+function fotoGeladen(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    state.fotoDataUrl = e.target.result;
+    const prev = document.getElementById('foto-preview');
+    prev.src = e.target.result;
+    prev.classList.add('zichtbaar');
+    document.getElementById('upload-zone').classList.add('heeft-foto');
+  };
+  reader.readAsDataURL(file);
+}
+
+// ── STIJL ──
+let gekozenStijl = null;
+function kiesStijl(stijl, el) {
+  document.querySelectorAll('.stijl-kaart').forEach(k => k.classList.remove('gekozen'));
+  el.classList.add('gekozen');
+  state.stijl = stijl;
+  gekozenStijl = stijl;
+}
+
+// ── BUDGET ──
+function updateBudget(val) {
+  const v = parseInt(val);
+  state.budget = v;
+  document.getElementById('budget-getal').textContent = '€ ' + v.toLocaleString('nl-NL');
+  const pct = ((v - 500) / (25000 - 500)) * 100;
+  document.getElementById('budget-slider').style.setProperty('--pct', pct.toFixed(1) + '%');
+}
+
+// ── ONDERHOUD ──
+function kiesOnderhoud(el, waarde) {
+  document.querySelectorAll('.check-kaart').forEach(k => {
+    if (k.closest('#scherm-3') && !k.closest('#wensen-grid')) {
+      k.classList.remove('actief');
+    }
+  });
+  el.classList.add('actief');
+  state.onderhoud = waarde;
+}
+
+// ── WENSEN ──
+function toggleWens(el, waarde) {
+  el.classList.toggle('actief');
+  if (el.classList.contains('actief')) {
+    if (!state.wensen.includes(waarde)) state.wensen.push(waarde);
+  } else {
+    state.wensen = state.wensen.filter(w => w !== waarde);
+  }
+}
+
+// ── SCHETS GENEREREN (naar samenvatting) ──
+function genereerSchets() {
+  document.getElementById('sam-adres').textContent =
+    `${state.straat} ${state.huisnummer}, ${state.plaats}` || 'Jouw adres';
+
+  const geoTags = document.getElementById('sam-geo-tags');
+  geoTags.innerHTML = '';
+  [
+    state.perceelGrootte ? state.perceelGrootte + ' m² perceel' : null,
+    state.bodemtype,
+    state.provincie,
+  ].filter(Boolean).forEach(t => {
+    const span = document.createElement('span');
+    span.className = 'sam-tag';
+    span.textContent = t;
+    geoTags.appendChild(span);
+  });
+
+  const stijlLabel = {
+    modern:'Modern & strak', natuurlijk:'Natuurlijk & bloeiend',
+    klassiek:'Klassiek', duurzaam:'Biodiversiteit', lounge:'Lounge & terras', moestuin:'Moestuin'
+  };
+  document.getElementById('sam-stijl').textContent =
+    (stijlLabel[state.stijl] || 'Niet gekozen') + ' · Budget € ' + state.budget.toLocaleString('nl-NL');
+
+  const wensenEl = document.getElementById('sam-wensen');
+  wensenEl.innerHTML = '';
+  ([state.onderhoud ? 'Onderhoud: ' + state.onderhoud : null, ...state.wensen])
+    .filter(Boolean).forEach(w => {
+      const span = document.createElement('span');
+      span.className = 'sam-tag';
+      span.textContent = w;
+      wensenEl.appendChild(span);
+    });
+
+  const fotoThumb = document.getElementById('sam-foto');
+  if (state.fotoDataUrl) {
+    fotoThumb.src = state.fotoDataUrl;
+    fotoThumb.classList.add('zichtbaar');
+    document.getElementById('sam-geen-foto').style.display = 'none';
+  } else {
+    fotoThumb.classList.remove('zichtbaar');
+    document.getElementById('sam-geen-foto').style.display = 'block';
+  }
+
+  naarScherm('resultaat');
+}
+
+// ── START GENERATIE → laad scherm → resultaat met schets ──
+function startGeneratie() {
+  const stappen = [
+    'Perceeldata ophalen via PDOK…',
+    'BGT tuinvlak berekenen…',
+    'Bodemtype bepalen via BRO…',
+    state.fotoDataUrl ? 'Foto analyseren via GPT-4o Vision…' : 'Klimaatdata laden…',
+    'Beplantingsplan genereren via Claude API…',
+    'Visuele render maken…',
+    'Schets klaar! ✓'
+  ];
+
+  let i = 0;
+  const el = document.getElementById('laad-stap');
+
+  const interval = setInterval(() => {
+    el.textContent = stappen[i];
+    if (i < stappen.length - 1) {
+      i++;
+    } else {
+      clearInterval(interval);
+      setTimeout(() => toonSchetsResultaat(), 600);
+    }
+  }, 900);
+}
+
+// ── TOON SCHETS RESULTAAT (mock voor MVP-demo) ──
+function toonSchetsResultaat() {
+
+  // ── PLANTEN per stijl ──────────────────────────────────────────────────────
+  // Wensen voegen extra planten toe bovenop de basislijst
+  const plantenPerStijl = {
+    duurzaam: [
+      { naam: 'Vlinderstruik',   lat: 'Buddleja davidii',        bloei: 'jul–sep', prijs: '€8–15' },
+      { naam: 'Echinacea',       lat: 'Echinacea purpurea',       bloei: 'jun–sep', prijs: '€4–8'  },
+      { naam: 'Lavendel',        lat: 'Lavandula angustifolia',   bloei: 'jun–aug', prijs: '€4–7'  },
+      { naam: 'Zonnehoed',       lat: 'Rudbeckia fulgida',        bloei: 'jul–okt', prijs: '€5–9'  },
+    ],
+    modern: [
+      { naam: 'Siergrassen mix', lat: 'Miscanthus sinensis',      bloei: 'aug–okt', prijs: '€9–18' },
+      { naam: 'Vaste Geranium',  lat: 'Geranium × magnificum',    bloei: 'mei–jul', prijs: '€5–8'  },
+      { naam: 'Hortensia',       lat: 'Hydrangea arborescens',    bloei: 'jun–sep', prijs: '€12–20'},
+      { naam: 'Hosta',           lat: 'Hosta sieboldiana',        bloei: 'jun–aug', prijs: '€8–14' },
+    ],
+    natuurlijk: [
+      { naam: 'Klaproos',        lat: 'Papaver rhoeas',           bloei: 'mei–jul', prijs: '€2–4'  },
+      { naam: 'Margriet',        lat: 'Leucanthemum vulgare',     bloei: 'jun–aug', prijs: '€3–6'  },
+      { naam: 'Wilde Malva',     lat: 'Malva sylvestris',         bloei: 'jun–sep', prijs: '€3–5'  },
+      { naam: 'Veldsalie',       lat: 'Salvia pratensis',         bloei: 'mei–jul', prijs: '€4–7'  },
+    ],
+    klassiek: [
+      { naam: 'Engelse Roos',    lat: 'Rosa × hybrida',           bloei: 'mei–okt', prijs: '€14–25'},
+      { naam: 'Buxus',           lat: 'Buxus sempervirens',       bloei: '—',       prijs: '€6–12' },
+      { naam: 'Clematis',        lat: 'Clematis montana',         bloei: 'apr–jun', prijs: '€10–18'},
+      { naam: 'Delphinium',      lat: 'Delphinium elatum',        bloei: 'jun–aug', prijs: '€5–9'  },
+    ],
+    lounge: [
+      { naam: 'Lavendel',        lat: 'Lavandula angustifolia',   bloei: 'jun–aug', prijs: '€4–7'  },
+      { naam: 'Agapanthus',      lat: 'Agapanthus africanus',     bloei: 'jul–aug', prijs: '€10–16'},
+      { naam: 'Salvia',          lat: 'Salvia nemorosa',          bloei: 'jun–sep', prijs: '€4–7'  },
+      { naam: 'Stipa',           lat: 'Stipa tenuissima',         bloei: 'jun–okt', prijs: '€7–12' },
+    ],
+    moestuin: [
+      { naam: 'Tomaat',          lat: 'Solanum lycopersicum',     bloei: 'jun–sep', prijs: '€2–4'  },
+      { naam: 'Courgette',       lat: 'Cucurbita pepo',           bloei: 'jul–sep', prijs: '€2–4'  },
+      { naam: 'Basilicum',       lat: 'Ocimum basilicum',         bloei: 'jun–aug', prijs: '€2–3'  },
+      { naam: 'Appelboom',       lat: 'Malus domestica',          bloei: 'apr–mei', prijs: '€25–45'},
+    ],
+  };
+
+  // Extra planten op basis van geselecteerde wensen
+  const wensenPlanten = {
+    vijver:     { naam: 'Gele Lis',       lat: 'Iris pseudacorus',     bloei: 'mei–jul', prijs: '€5–9'  },
+    privacy:    { naam: 'Portugese Laurier', lat: 'Prunus lusitanica', bloei: '—',       prijs: '€12–22'},
+    moestuin:   { naam: 'Frambozenstruik', lat: 'Rubus idaeus',        bloei: 'jun–aug', prijs: '€6–10' },
+    huisdieren: { naam: 'Gazon (hondenbestendig)', lat: 'Festuca rubra', bloei: '—',     prijs: '€3–5/m²'},
+    terras:     { naam: 'Kuipplant Agapanthus', lat: 'Agapanthus sp.', bloei: 'jul–aug', prijs: '€12–18'},
+    speeltuin:  { naam: 'Zachte bodembedekker', lat: 'Thymus serpyllum', bloei: 'jun–aug', prijs: '€3–6' },
+  };
+
+  let planten = [...(plantenPerStijl[state.stijl] || plantenPerStijl.duurzaam)];
+
+  // Voeg wens-specifieke planten toe (max 2 extra)
+  let toegevoegd = 0;
+  for (const wens of state.wensen) {
+    if (wensenPlanten[wens] && toegevoegd < 2) {
+      planten.push(wensenPlanten[wens]);
+      toegevoegd++;
+    }
+  }
+
+  const plantenEl = document.getElementById('schets-planten');
+  plantenEl.innerHTML = '';
+  planten.forEach(p => {
+    plantenEl.innerHTML += `
+      <div style="display:flex;justify-content:space-between;align-items:center;
+                  padding:12px 16px;background:var(--groen-pale);border-radius:10px;
+                  border:1px solid var(--groen-licht);">
+        <div>
+          <div style="font-size:14px;font-weight:500;">${p.naam}</div>
+          <div style="font-size:12px;color:var(--grijs);font-style:italic;">${p.lat} · bloei: ${p.bloei}</div>
+        </div>
+        <div style="font-size:13px;font-weight:500;color:var(--groen-mid);
+                    white-space:nowrap;margin-left:12px;">${p.prijs}</div>
+      </div>`;
+  });
+
+  // ── KOSTEN ────────────────────────────────────────────────────────────────
+  const b = state.budget;
+  const aanlegMin = Math.round(b * 0.65 / 100) * 100;
+  const aanlegMax = Math.round(b * 0.80 / 100) * 100;
+  const plantMin  = Math.round(b * 0.12 / 100) * 100;
+  const plantMax  = Math.round(b * 0.20 / 100) * 100;
+
+  document.getElementById('schets-kosten-planten').textContent =
+    `€ ${plantMin.toLocaleString('nl-NL')} – ${plantMax.toLocaleString('nl-NL')}`;
+  document.getElementById('schets-kosten-aanleg').textContent =
+    `€ ${aanlegMin.toLocaleString('nl-NL')} – ${aanlegMax.toLocaleString('nl-NL')}`;
+  document.getElementById('schets-kosten-totaal').textContent =
+    `€ ${(aanlegMin + plantMin).toLocaleString('nl-NL')} – ${(aanlegMax + plantMax).toLocaleString('nl-NL')}`;
+
+  // ── FOTO SELECTIE ─────────────────────────────────────────────────────────
+  //
+  // Prioriteit: specifieke wensen gaan boven stijl.
+  // Alle foto's zijn gecontroleerde tuinbeelden — geen villa's, geen zwembaden.
+  // Parameters: w=900 voor breedte, crop=entropy voor slim bijsnijden.
+  //
+  const fotoDatabase = {
+    // Wens-specifiek (hoogste prioriteit)
+    speeltuin:  'https://images.unsplash.com/photo-1575783970733-1aaedde1db74?w=900&q=85&crop=entropy',
+    vijver:     'https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?w=900&q=85&crop=entropy',
+    moestuin_w: 'https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=900&q=85&crop=entropy',
+    privacy:    'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=900&q=85&crop=entropy',
+
+    // Stijl-gebaseerd
+    duurzaam:   'https://images.unsplash.com/photo-1471194402529-8e0f5a675de6?w=900&q=85&crop=entropy',
+    modern:     'https://images.unsplash.com/photo-1558904541-efa843a96f01?w=900&q=85&crop=entropy',
+    natuurlijk: 'https://images.unsplash.com/photo-1499002238440-d264edd596ec?w=900&q=85&crop=entropy',
+    klassiek:   'https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=900&q=85&crop=entropy',
+    lounge:     'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=900&q=85&crop=entropy',
+    moestuin:   'https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=900&q=85&crop=entropy',
+
+    // Veilige fallback — gegarandeerd een tuin
+    fallback:   'https://images.unsplash.com/photo-1471194402529-8e0f5a675de6?w=900&q=85&crop=entropy',
+  };
+
+  // Kies foto: wens heeft prioriteit over stijl
+  let fotoKey = state.stijl || 'fallback';
+  if (state.wensen.includes('speeltuin')) fotoKey = 'speeltuin';
+  else if (state.wensen.includes('vijver'))    fotoKey = 'vijver';
+  else if (state.wensen.includes('privacy'))   fotoKey = 'privacy';
+  else if (state.wensen.includes('moestuin'))  fotoKey = 'moestuin_w';
+
+  const fotoUrl = fotoDatabase[fotoKey] || fotoDatabase.fallback;
+
+  const img        = document.getElementById('schets-render');
+  const loadingDiv = document.getElementById('schets-render-loading');
+
+  // Laad foto, verberg spinner zodra geladen of bij fout
+  img.onload  = () => { loadingDiv.style.display = 'none'; };
+  img.onerror = () => {
+    // Foto-URL mislukt → val terug op veilige fallback
+    if (img.src !== fotoDatabase.fallback) {
+      img.src = fotoDatabase.fallback;
+    } else {
+      loadingDiv.style.display = 'none';
+    }
+  };
+  img.src = fotoUrl;
+
+  // ── ONDERTITEL ────────────────────────────────────────────────────────────
+  const stijlLabel = {
+    modern:'moderne', natuurlijk:'natuurlijke', klassiek:'klassieke',
+    duurzaam:'biodiversiteits', lounge:'lounge', moestuin:'moestuin',
+  };
+  const wensenLabel = state.wensen.length
+    ? ` met ${state.wensen.slice(0,2).join(' en ')}`
+    : '';
+
+  document.getElementById('schets-ondertitel').textContent =
+    `Een ${stijlLabel[state.stijl] || ''} tuin${wensenLabel} — `
+    + `op maat voor ${state.plaats || 'jouw gemeente'}, bodem: ${state.bodemtype || 'NL standaard'}.`;
+
+  naarScherm('schets');
+}
+</script>
+
+</body>
+</html>
