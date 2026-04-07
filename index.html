@@ -378,18 +378,19 @@ h2 em { font-style: italic; color: var(--aarde-mid); }
 /* ── HOE HET WERKT ── */
 .stappen-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 1px;
   background: var(--lijn);
   margin-top: 60px;
   border: 1px solid var(--lijn);
 }
 
-@media (max-width: 768px) { .stappen-grid { grid-template-columns: 1fr; } }
+@media (max-width: 1024px) { .stappen-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 640px) { .stappen-grid { grid-template-columns: 1fr; } }
 
 .stap {
   background: var(--wit);
-  padding: 48px 36px;
+  padding: 40px 28px;
   position: relative;
 }
 
@@ -511,6 +512,12 @@ h2 em { font-style: italic; color: var(--aarde-mid); }
   max-width: 720px;
 }
 
+.prijzen-grid.drie-kolommen {
+  grid-template-columns: repeat(3, 1fr);
+  max-width: 1080px;
+}
+
+@media (max-width: 900px) { .prijzen-grid.drie-kolommen { grid-template-columns: 1fr; } }
 @media (max-width: 640px) { .prijzen-grid { grid-template-columns: 1fr; } }
 
 .prijs-kaart {
@@ -520,6 +527,15 @@ h2 em { font-style: italic; color: var(--aarde-mid); }
   background: white;
   transition: all 0.2s;
 }
+
+.prijs-kaart .dim { opacity: 0.4; }
+.prijs-kaart .prijs-check.dim { opacity: 0.3; }
+
+.prijs-btn.gratis-btn {
+  background: var(--groen);
+  color: white;
+}
+.prijs-btn.gratis-btn:hover { background: #5a7c50; }
 
 .prijs-kaart:hover { border-color: var(--aarde-mid); }
 
@@ -769,9 +785,9 @@ footer {
   <div class="hero-overlay"></div>
 
   <div class="hero-content">
-    <div style="display:inline-flex;align-items:center;gap:10px;background:rgba(200,169,110,0.15);border:1px solid rgba(200,169,110,0.4);border-radius:4px;padding:8px 16px;margin-bottom:20px;">
-      <div style="width:7px;height:7px;border-radius:50%;background:#C8A96E;animation:pulse 2s infinite;flex-shrink:0;"></div>
-      <span style="font-size:12px;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;color:#C8A96E;">Binnenkort beschikbaar — meld je aan voor vroege toegang</span>
+    <div style="display:inline-flex;align-items:center;gap:10px;background:rgba(139,175,130,0.15);border:1px solid rgba(139,175,130,0.4);border-radius:4px;padding:8px 16px;margin-bottom:20px;">
+      <div style="width:7px;height:7px;border-radius:50%;background:#8BAF82;flex-shrink:0;"></div>
+      <span style="font-size:12px;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;color:#8BAF82;">Gratis tuinschets · Betaal alleen als je verder wil</span>
     </div>
     <div class="hero-label">Slim Tuinontwerp</div>
     <h1>
@@ -779,10 +795,10 @@ footer {
       <em>opnieuw uitgevonden</em>
     </h1>
     <p class="hero-sub">
-      Van postcode naar beplantingsplan in minuten. Afgestemd op jouw bodem, jouw klimaat en jouw smaak.
+      Ontvang gratis een tuinschets op maat. Binnen 3 minuten. Afgestemd op jouw bodem, klimaat en smaak.
     </p>
     <div class="hero-acties">
-      <a href="#aanmelden" class="btn-primair">Meld je aan voor vroege toegang →</a>
+      <a href="tuinintake.html" class="btn-primair">Start gratis tuinschets →</a>
       <a href="#hoe" class="btn-ghost">Hoe het werkt</a>
     </div>
   </div>
@@ -796,8 +812,8 @@ footer {
 <!-- ── STATS ── -->
 <div class="stats-strip">
   <div class="stat">
-    <div class="stat-getal">€49</div>
-    <div class="stat-label">Beplantingsplan op maat</div>
+    <div class="stat-getal">Gratis</div>
+    <div class="stat-label">Tuinschets op maat</div>
   </div>
   <div class="stat">
     <div class="stat-getal">3 min</div>
@@ -816,7 +832,7 @@ footer {
 <!-- ── VOOR NA ── -->
 <section class="voor-na" id="hoe">
   <div class="sectie-eyebrow">Transformatie</div>
-  <h2>Van verwilderde tuin naar<br><em>groen paradijs</em></h2>
+  <h2>Van kale tuin naar<br><em>groen paradijs</em></h2>
   <p class="voor-na-sub">Geen tuinarchitect nodig. Geen weken wachten. Tuinzen levert een professioneel plan op maat — afgestemd op jouw perceel, bodem en stijl.</p>
 
   <div class="voor-na-grid">
@@ -838,26 +854,32 @@ footer {
 <!-- ── HOE HET WERKT ── -->
 <section class="sectie" id="stappen">
   <div class="sectie-eyebrow">Hoe het werkt</div>
-  <h2>Drie stappen naar<br><em>jouw nieuwe tuin</em></h2>
+  <h2>Vier stappen naar<br><em>jouw nieuwe tuin</em></h2>
 
   <div class="stappen-grid">
     <div class="stap ani">
       <div class="stap-nr">01</div>
       <h3>Vul je adres in</h3>
-      <p>We halen automatisch je perceeldata en bodemtype op via het Kadaster. Kies welk deel je wil laten ontwerpen en upload een foto.</p>
-      <span class="stap-tag">⚡ Gratis & snel</span>
+      <p>We halen automatisch je perceeldata en bodemtype op via het Kadaster. Kies welk deel je wil laten ontwerpen.</p>
+      <span class="stap-tag">⚡ 30 seconden</span>
     </div>
     <div class="stap ani ani-d1">
       <div class="stap-nr">02</div>
-      <h3>Kies stijl & budget</h3>
-      <p>Zes tuinstijlen om uit te kiezen — van modern en strak tot biodiversiteit en moestuin. Stel je budget in en geef aan hoe je wil uitvoeren.</p>
-      <span class="stap-tag">🌿 Jouw smaak, jouw keuze</span>
+      <h3>Kies je tuinstijl</h3>
+      <p>Zes stijlen om uit te kiezen — van modern en strak tot biodiversiteit en moestuin. Vul je e-mail in en ontvang direct je gratis schets.</p>
+      <span class="stap-tag">🌿 Gratis tuinschets</span>
     </div>
     <div class="stap ani ani-d2">
       <div class="stap-nr">03</div>
-      <h3>Ontvang je plan</h3>
-      <p>Een volledig beplantingsplan op maat, afgestemd op jouw bodem en klimaat. Planten direct bestellen of een hovenier inschakelen.</p>
-      <span class="stap-tag">📋 Vanaf €49</span>
+      <h3>Upgrade naar volledig plan</h3>
+      <p>Bevalt de schets? Unlock het volledige beplantingsplan met plantenlijst, seizoensplanning en PDF download vanaf €49.</p>
+      <span class="stap-tag">📋 Alleen betalen als je wil</span>
+    </div>
+    <div class="stap ani ani-d3">
+      <div class="stap-nr">04</div>
+      <h3>Bestel of laat aanleggen</h3>
+      <p>Bestel planten direct via onze partners of koppel met een hovenier in jouw regio voor professionele aanleg.</p>
+      <span class="stap-tag">🏡 Van plan naar realiteit</span>
     </div>
   </div>
 </section>
@@ -931,16 +953,31 @@ footer {
 <!-- ── PRIJZEN ── -->
 <section class="sectie" id="prijzen">
   <div class="sectie-eyebrow">Prijzen</div>
-  <h2>Transparant<br><em>& eerlijk geprijsd</em></h2>
+  <h2>Start gratis,<br><em>upgrade wanneer je wil</em></h2>
 
-  <div class="prijzen-grid">
+  <div class="prijzen-grid drie-kolommen">
     <div class="prijs-kaart ani">
+      <div class="prijs-naam">Tuinschets</div>
+      <div class="prijs-bedrag">Gratis</div>
+      <div class="prijs-sub">Geen creditcard nodig</div>
+      <ul class="prijs-features">
+        <li><div class="prijs-check">✓</div> Perceelanalyse op basis van postcode</li>
+        <li><div class="prijs-check">✓</div> Bodem- en zonstand analyse</li>
+        <li><div class="prijs-check">✓</div> Keuze uit 6 tuinstijlen</li>
+        <li><div class="prijs-check">✓</div> Tuinschets met watermerk</li>
+        <li><div class="prijs-check dim">—</div> <span class="dim">Geen plantenlijst</span></li>
+        <li><div class="prijs-check dim">—</div> <span class="dim">Geen PDF download</span></li>
+      </ul>
+      <a href="tuinintake.html" class="prijs-btn gratis-btn">Start gratis →</a>
+    </div>
+
+    <div class="prijs-kaart ani ani-d1">
       <div class="prijs-naam">Beplantingsplan</div>
       <div class="prijs-bedrag">€49</div>
       <div class="prijs-sub">Eenmalig · iDEAL & creditcard</div>
       <ul class="prijs-features">
-        <li><div class="prijs-check">✓</div> Volledig beplantingsplan op maat</li>
-        <li><div class="prijs-check">✓</div> Plantenlijst met aantallen</li>
+        <li><div class="prijs-check">✓</div> Alles van Gratis, plus:</li>
+        <li><div class="prijs-check">✓</div> Volledige plantenlijst met aantallen</li>
         <li><div class="prijs-check">✓</div> Seizoensplanning</li>
         <li><div class="prijs-check">✓</div> PDF download</li>
         <li><div class="prijs-check">✓</div> Planten direct bestellen</li>
@@ -949,17 +986,17 @@ footer {
       <a href="tuinintake.html" class="prijs-btn">Start met beplantingsplan →</a>
     </div>
 
-    <div class="prijs-kaart uitgelicht ani ani-d1">
+    <div class="prijs-kaart uitgelicht ani ani-d2">
       <div class="aanbevolen">Meest gekozen</div>
       <div class="prijs-naam">Volledig ontwerp</div>
       <div class="prijs-bedrag">€99</div>
       <div class="prijs-sub">Eenmalig · iDEAL & creditcard</div>
       <ul class="prijs-features">
+        <li><div class="prijs-check">✓</div> Alles van Beplantingsplan, plus:</li>
         <li><div class="prijs-check">✓</div> HD fotorealistische render</li>
-        <li><div class="prijs-check">✓</div> Volledig beplantingsplan</li>
-        <li><div class="prijs-check">✓</div> Seizoensplan & onderhoudstips</li>
-        <li><div class="prijs-check">✓</div> PDF download</li>
-        <li><div class="prijs-check">✓</div> Hovenier-koppeling in jouw regio</li>
+        <li><div class="prijs-check">✓</div> Onderhoudskalender</li>
+        <li><div class="prijs-check">✓</div> Hovenier-match in jouw regio</li>
+        <li><div class="prijs-check">✓</div> Prioriteit support</li>
         <li><div class="prijs-check">✓</div> 30 dagen garantie</li>
       </ul>
       <a href="tuinintake.html" class="prijs-btn">Start met volledig ontwerp →</a>
@@ -979,33 +1016,33 @@ footer {
   <div class="cta-content">
     <div class="sectie-eyebrow" style="justify-content:center;color:var(--goud);">Begin vandaag</div>
     <h2>Klaar voor jouw<br><em>nieuwe tuin?</em></h2>
-    <p class="cta-sub">Start gratis. Ontvang je schets binnen minuten. Betaal alleen als je verder wil.</p>
-    <a href="#aanmelden" class="btn-primair">Meld je aan voor vroege toegang →</a>
-    <p class="cta-onderaan">Gratis aanmelden · Vroegboekerkorting bij lancering</p>
+    <p class="cta-sub">Start gratis. Ontvang je tuinschets binnen 3 minuten. Upgrade alleen als je verder wil.</p>
+    <a href="tuinintake.html" class="btn-primair">Start gratis tuinschets →</a>
+    <p class="cta-onderaan">Geen creditcard nodig · Direct resultaat</p>
   </div>
 </section>
 
-<!-- ── AANMELDEN ── -->
-<section id="aanmelden" style="background:var(--aarde);padding:80px 64px;text-align:center;">
+<!-- ── NIEUWSBRIEF ── -->
+<section id="nieuwsbrief" style="background:var(--aarde);padding:80px 64px;text-align:center;">
   <div style="max-width:520px;margin:0 auto;">
-    <div class="sectie-eyebrow" style="justify-content:center;color:var(--goud-licht);">Binnenkort beschikbaar</div>
-    <h2 style="color:white;margin-bottom:14px;">Wees er als eerste bij</h2>
+    <div class="sectie-eyebrow" style="justify-content:center;color:var(--goud-licht);">Tuintips</div>
+    <h2 style="color:white;margin-bottom:14px;">Gratis tuinadvies in je inbox</h2>
     <p style="font-size:16px;color:rgba(255,255,255,0.6);line-height:1.7;font-weight:300;margin-bottom:36px;">
-      Tuinzen lanceert binnenkort. Meld je aan en ontvang een bericht zodra we live gaan — inclusief een vroegboekerkorting.
+      Ontvang seizoensgebonden tips, plantadvies en inspiratie. Maximaal 2x per maand.
     </p>
     <div style="display:flex;gap:0;border-radius:6px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.2);max-width:440px;margin:0 auto;">
-      <input type="email" id="wachtlijst-email" placeholder="jouw@email.nl"
+      <input type="email" id="nieuwsbrief-email" placeholder="jouw@email.nl"
         style="flex:1;padding:15px 18px;border:none;font-family:'DM Sans',sans-serif;font-size:14px;color:#1A1208;outline:none;">
-      <button onclick="wachtlijstAanmelden()"
+      <button onclick="nieuwsbriefAanmelden()"
         style="padding:15px 24px;background:#C8A96E;color:#3D2B1A;border:none;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;cursor:pointer;white-space:nowrap;transition:background 0.2s;"
         onmouseover="this.style.background='#E8D5A8'" onmouseout="this.style.background='#C8A96E'">
-        Houd me op de hoogte →
+        Aanmelden →
       </button>
     </div>
-    <div id="wachtlijst-bevestiging" style="display:none;margin-top:14px;font-size:13px;color:#8BAF82;font-weight:500;">
-      ✓ Gelukt — we laten je weten zodra Tuinzen live is
+    <div id="nieuwsbrief-bevestiging" style="display:none;margin-top:14px;font-size:13px;color:#8BAF82;font-weight:500;">
+      ✓ Gelukt — je ontvangt binnenkort je eerste tuintip
     </div>
-    <p style="font-size:12px;color:rgba(255,255,255,0.3);margin-top:14px;">Geen spam · Alleen een bericht bij lancering</p>
+    <p style="font-size:12px;color:rgba(255,255,255,0.3);margin-top:14px;">Geen spam · Altijd uitschrijven mogelijk</p>
   </div>
 </section>
 
@@ -1022,11 +1059,11 @@ footer {
 </footer>
 
 <script>
-async function wachtlijstAanmelden() {
-  const email = document.getElementById('wachtlijst-email').value;
+async function nieuwsbriefAanmelden() {
+  const email = document.getElementById('nieuwsbrief-email').value;
   if (!email || !email.includes('@')) return;
 
-  const btn = document.querySelector('#aanmelden button');
+  const btn = document.querySelector('#nieuwsbrief button');
   btn.textContent = 'Aanmelden...';
   btn.disabled = true;
 
@@ -1036,14 +1073,14 @@ async function wachtlijstAanmelden() {
       headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
       body: JSON.stringify({
         email: email,
-        _subject: 'Nieuwe aanmelding Tuinzen wachtlijst',
-        bron: 'tuinzen.nl wachtlijst'
+        _subject: 'Nieuwe nieuwsbrief aanmelding Tuinzen',
+        bron: 'tuinzen.nl nieuwsbrief'
       })
     });
 
     if (res.ok) {
-      document.querySelector('#aanmelden .signup-rij') && (document.querySelector('#aanmelden .signup-rij').style.display = 'none');
-      document.getElementById('wachtlijst-bevestiging').style.display = 'block';
+      document.getElementById('nieuwsbrief-bevestiging').style.display = 'block';
+      btn.textContent = 'Aangemeld ✓';
     } else {
       btn.textContent = 'Probeer opnieuw';
       btn.disabled = false;
@@ -1054,8 +1091,8 @@ async function wachtlijstAanmelden() {
   }
 }
 
-document.getElementById('wachtlijst-email')?.addEventListener('keydown', e => {
-  if (e.key === 'Enter') wachtlijstAanmelden();
+document.getElementById('nieuwsbrief-email')?.addEventListener('keydown', e => {
+  if (e.key === 'Enter') nieuwsbriefAanmelden();
 });
 
 // Nav donker bij scrollen
