@@ -2,24 +2,23 @@ name: Deploy website naar Hostinger
 
 on:
   push:
-      branches:
-            - main
-              workflow_dispatch:
+    branches:
+      - main
+  workflow_dispatch:
 
-              jobs:
-                deploy:
-                    name: Upload naar Hostinger
-                        runs-on: ubuntu-latest
+jobs:
+  deploy:
+    name: Upload naar Hostinger
+    runs-on: ubuntu-latest
+    steps:
+      - name: Code ophalen
+        uses: actions/checkout@v4
 
-                                steps:
-                                      - name: Code ophalen
-                                              uses: actions/checkout@v4
-
-                                                    - name: Upload naar FTP
-                                                            uses: SamKirkland/FTP-Deploy-Action@v4.3.5
-                                                                    with:
-                                                                              server: 145.79.20.123
-                                                                                        username: u829705242
-                                                                                                  password: ${{ secrets.FTP_PASSWORD }}
-                                                                                                            server-dir: /public_html/
-                                                                                                                      local-dir: ./
+      - name: Upload naar FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: 145.79.20.123
+          username: u829705242
+          password: ${{ secrets.FTP_PASSWORD }}
+          server-dir: /public_html/
+          local-dir: ./
