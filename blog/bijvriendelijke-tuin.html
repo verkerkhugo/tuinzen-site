@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>Zo leg je een bijvriendelijke tuin aan | Tuinzen</title>
+    <meta name="description" content="Help bijen en vlinders en maak je tuin kleurrijker. Tips voor nectar- en stuifmeelrijke beplanting voor een biodiverse tuin.">
+    <meta name="keywords" content="bijvriendelijke tuin, bijen helpen, vlindertuin, biodiversiteit, nectar planten, bestuivers">
+    <meta name="author" content="Tuinzen">
+    
+    <link rel="canonical" href="https://tuinzen.nl/blog/bijvriendelijke-tuin.html">
+    
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://tuinzen.nl/blog/bijvriendelijke-tuin.html">
+    <meta property="og:title" content="Zo leg je een bijvriendelijke tuin aan">
+    <meta property="og:image" content="https://tuinzen.nl/blog/blog-bijen.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:locale" content="nl_NL">
+    <meta property="og:site_name" content="Tuinzen">
+    
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://tuinzen.nl/blog/blog-bijen.png">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Source+Sans+3:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --color-cream: #F8F6F0;
+            --color-sage: #7A9E7E;
+            --color-sage-dark: #5C7D5F;
+            --color-forest: #2D4A3E;
+            --color-earth: #8B7355;
+            --color-charcoal: #2C2C2C;
+            --color-white: #FFFFFF;
+            --font-display: 'Playfair Display', Georgia, serif;
+            --font-body: 'Source Sans 3', -apple-system, sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: var(--font-body);
+            background-color: var(--color-cream);
+            color: var(--color-charcoal);
+            line-height: 1.8;
+        }
+
+        .nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--color-forest);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-family: var(--font-display);
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--color-white);
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.15);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: rgba(255,255,255,0.85);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .nav-cta {
+            background: var(--color-sage);
+            color: var(--color-white) !important;
+            padding: 0.6rem 1.5rem;
+            border-radius: 6px;
+        }
+
+        .article-hero {
+            padding-top: 80px;
+            position: relative;
+            height: 60vh;
+            min-height: 400px;
+            display: flex;
+            align-items: flex-end;
+            background: linear-gradient(to bottom, rgba(45,74,62,0.2), rgba(45,74,62,0.7)),
+                        url('blog-bijen.png') center/cover no-repeat;
+        }
+
+        .hero-content {
+            width: 100%;
+            padding: 3rem 2rem;
+            color: var(--color-white);
+        }
+
+        .hero-content .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .breadcrumb {
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            opacity: 0.9;
+        }
+
+        .breadcrumb a {
+            color: var(--color-white);
+            text-decoration: none;
+        }
+
+        .article-meta {
+            display: flex;
+            gap: 1.5rem;
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
+            opacity: 0.9;
+        }
+
+        .article-hero h1 {
+            font-family: var(--font-display);
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        .article-content {
+            max-width: 750px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+        }
+
+        .article-intro {
+            font-size: 1.25rem;
+            color: var(--color-forest);
+            margin-bottom: 2.5rem;
+            padding-bottom: 2.5rem;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+        }
+
+        .article-content h2 {
+            font-family: var(--font-display);
+            font-size: 1.75rem;
+            color: var(--color-forest);
+            margin: 2.5rem 0 1rem;
+        }
+
+        .article-content p {
+            margin-bottom: 1.5rem;
+        }
+
+        .article-content ul {
+            margin: 1rem 0 1.5rem 1.5rem;
+        }
+
+        .article-content li {
+            margin-bottom: 0.5rem;
+        }
+
+        .season-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .season-card {
+            background: var(--color-white);
+            padding: 1.25rem;
+            border-radius: 10px;
+            border-top: 3px solid var(--color-sage);
+        }
+
+        .season-card h4 {
+            font-family: var(--font-display);
+            color: var(--color-forest);
+            margin-bottom: 0.5rem;
+        }
+
+        .season-card ul {
+            margin: 0;
+            padding-left: 1rem;
+            font-size: 0.95rem;
+        }
+
+        .tip-box {
+            background: var(--color-sage);
+            color: var(--color-white);
+            padding: 1.5rem 2rem;
+            border-radius: 12px;
+            margin: 2rem 0;
+        }
+
+        .tip-box strong {
+            display: block;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .warning-box {
+            background: #FFF3CD;
+            border-left: 4px solid #E6A817;
+            padding: 1.25rem 1.5rem;
+            border-radius: 0 8px 8px 0;
+            margin: 1.5rem 0;
+        }
+
+        .warning-box strong {
+            color: #8B6914;
+        }
+
+        .article-cta {
+            background: var(--color-forest);
+            color: var(--color-white);
+            padding: 3rem;
+            border-radius: 16px;
+            text-align: center;
+            margin: 3rem 0;
+        }
+
+        .article-cta h3 {
+            font-family: var(--font-display);
+            font-size: 1.75rem;
+            margin-bottom: 1rem;
+            color: var(--color-white);
+        }
+
+        .article-cta p {
+            opacity: 0.9;
+            margin-bottom: 1.5rem;
+            color: var(--color-white);
+        }
+
+        .btn-primary {
+            display: inline-block;
+            background: var(--color-sage);
+            color: var(--color-white);
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .footer {
+            background: var(--color-forest);
+            color: var(--color-white);
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+
+        .footer a {
+            color: var(--color-sage);
+            text-decoration: none;
+        }
+
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .article-hero { height: 50vh; }
+            .article-content { padding: 2rem 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav" role="navigation" aria-label="Hoofdnavigatie">
+        <a href="../index.html" class="logo">
+            <span class="logo-icon">T</span>
+            Tuinzen
+        </a>
+        <ul class="nav-links">
+            <li><a href="../index.html#stijlen">Stijlen</a></li>
+            <li><a href="../index.html#prijzen">Prijzen</a></li>
+            <li><a href="../blog.html">Blog</a></li>
+            <li><a href="../index.html#contact" class="nav-cta">Gratis schets →</a></li>
+        </ul>
+    </nav>
+
+    <header class="article-hero">
+        <div class="hero-content">
+            <div class="container">
+                <nav class="breadcrumb">
+                    <a href="../index.html">Home</a> / <a href="../blog.html">Blog</a> / Bijvriendelijke tuin
+                </nav>
+                <div class="article-meta">
+                    <span>📅 Maart 2026</span>
+                    <span>⏱️ 9 min leestijd</span>
+                    <span>🏷️ Biodiversiteit</span>
+                </div>
+                <h1>Zo leg je een bijvriendelijke tuin aan</h1>
+            </div>
+        </div>
+    </header>
+
+    <article class="article-content">
+        <p class="article-intro">
+            Bijen, hommels en vlinders hebben het moeilijk. Door verlies van natuurlijke habitat en 
+            het gebruik van pesticiden zijn hun aantallen drastisch gedaald. Het goede nieuws? 
+            Jouw tuin kan een toevluchtsoord worden. En het mooie is: een bijvriendelijke tuin 
+            is ook een kleurrijke, levendige tuin vol beweging en leven.
+        </p>
+
+        <h2>Waarom bijen zo belangrijk zijn</h2>
+        <p>
+            Bijen zijn verantwoordelijk voor de bestuiving van ongeveer 80% van onze voedselgewassen. 
+            Zonder bijen geen appels, peren, kersen, tomaten, courgettes en nog veel meer. 
+            Ze zijn letterlijk onmisbaar voor ons ecosysteem én onze voedselvoorziening.
+        </p>
+        <p>
+            Maar het gaat niet alleen om honingbijen. Nederland telt meer dan 350 soorten wilde bijen, 
+            waarvan de helft bedreigd is. Deze solitaire bijen — zoals metselbijen, maskerbijen en 
+            behangersbijen — zijn vaak nog effectievere bestuivers dan honingbijen.
+        </p>
+
+        <h2>De basisprincipes van een bijvriendelijke tuin</h2>
+        
+        <h3>1. Kies de juiste planten</h3>
+        <p>
+            Niet alle bloemen zijn even aantrekkelijk voor bijen. Gevulde bloemen (waar de meeldraden 
+            zijn omgezet in extra bloemblaadjes) produceren vaak geen nectar of stuifmeel. 
+            Kies voor <strong>enkelvoudige, open bloemen</strong> waar bijen makkelijk bij kunnen.
+        </p>
+
+        <h3>2. Zorg voor bloei van maart tot oktober</h3>
+        <p>
+            Bijen hebben het hele seizoen voedsel nodig. Plan je beplanting zo dat er altijd iets bloeit:
+        </p>
+
+        <div class="season-grid">
+            <div class="season-card">
+                <h4>🌸 Voorjaar</h4>
+                <ul>
+                    <li>Krokus</li>
+                    <li>Wilgenkatjes</li>
+                    <li>Longkruid</li>
+                    <li>Sleutelbloem</li>
+                </ul>
+            </div>
+            <div class="season-card">
+                <h4>☀️ Zomer</h4>
+                <ul>
+                    <li>Lavendel</li>
+                    <li>Salie</li>
+                    <li>Kattenkruid</li>
+                    <li>Zonnehoed</li>
+                </ul>
+            </div>
+            <div class="season-card">
+                <h4>🍂 Herfst</h4>
+                <ul>
+                    <li>Herfstaster</li>
+                    <li>Sedum</li>
+                    <li>Heide</li>
+                    <li>Klimop (bloeit!)</li>
+                </ul>
+            </div>
+        </div>
+
+        <h3>3. Plant in groepen</h3>
+        <p>
+            Bijen zijn efficiënte verzamelaars. Ze bezoeken liefst veel bloemen van dezelfde soort 
+            achter elkaar. Plant daarom minimaal 3-5 planten van dezelfde soort bij elkaar in plaats 
+            van losse exemplaren verspreid door de tuin.
+        </p>
+
+        <div class="tip-box">
+            <strong>🐝 Toppers voor bijen</strong>
+            De absolute favorieten: lavendel, tijm, oregano, borage, phacelia, kattenkruid (Nepeta), 
+            salie, zonnehoed (Echinacea), bolklaverbloem (Centaurea) en alle kruiden die je laat bloeien!
+        </div>
+
+        <h2>Creëer nestgelegenheid</h2>
+        <p>
+            Naast voedsel hebben bijen ook een plek nodig om te nestelen. Verschillende soorten 
+            hebben verschillende wensen:
+        </p>
+        <ul>
+            <li><strong>Grondnesters</strong> (70% van de wilde bijen) — Laat een stukje kale, 
+            zandige grond onbedekt, liefst op een zonnige plek</li>
+            <li><strong>Holennesters</strong> — Hang een bijenhotel of laat dode takken en 
+            holle stengels staan</li>
+            <li><strong>Hommels</strong> — Nestelen graag in verlaten muizenholletjes of 
+            onder tegels</li>
+        </ul>
+
+        <h3>Een goed bijenhotel</h3>
+        <p>
+            Niet elk bijenhotel is even effectief. Let op deze punten:
+        </p>
+        <ul>
+            <li>Gaatjes van 3-10 mm diameter (verschillende maten voor verschillende soorten)</li>
+            <li>Minimaal 10 cm diep</li>
+            <li>Glad afgewerkte gangen (geen splinters)</li>
+            <li>Hang op een zonnige, beschutte plek, op ooghoogte</li>
+            <li>Bamboe, riet of geboord hout werkt het beste</li>
+        </ul>
+
+        <div class="warning-box">
+            <strong>⚠️ Vermijd pesticiden!</strong>
+            Gif in de tuin is funest voor bijen. Zelfs biologische middelen kunnen schadelijk zijn. 
+            Accepteer wat vraatschade en laat de natuur haar werk doen — roofinsecten houden 
+            plaaginsecten vaak vanzelf onder controle.
+        </div>
+
+        <h2>Extra tips voor een levendige tuin</h2>
+        <p>
+            <strong>Laat je gazon soms ongemaaid</strong> — Klavertjes en madeliefjes zijn 
+            waardevolle voedselbronnen. Maai een deel van je gazon pas in juni of laat stroken staan.
+        </p>
+        <p>
+            <strong>Kies inheemse planten</strong> — Nederlandse wilde planten hebben vaak 
+            co-geëvolueerd met onze bijen en zijn daarom extra waardevol.
+        </p>
+        <p>
+            <strong>Zet een schaaltje water neer</strong> — Met wat steentjes of kurken erin 
+            zodat bijen veilig kunnen drinken zonder te verdrinken.
+        </p>
+        <p>
+            <strong>Laat het een beetje rommelig</strong> — Dode stengels, bladhopen en 
+            "vergeten" hoekjes zijn cruciaal voor overwinterende insecten.
+        </p>
+
+        <h2>Begin klein</h2>
+        <p>
+            Je hoeft niet je hele tuin om te gooien. Begin met een paar potten lavendel op je 
+            terras, een kuipje met kruiden die je laat bloeien, of vervang een stukje gazon 
+            door een bloemenmengsel. Elke bloem telt!
+        </p>
+
+        <div class="article-cta">
+            <h3>Wil je een biodiverse tuin?</h3>
+            <p>Wij ontwerpen tuinen waar bijen, vlinders én jij je thuis voelen. Mooi én goed voor de natuur.</p>
+            <a href="../index.html#contact" class="btn-primary">Vraag een gratis schets aan →</a>
+        </div>
+    </article>
+
+    <footer class="footer" role="contentinfo">
+        <p>© 2026 Tuinzen — AI-gestuurde tuinontwerpen voor elke tuin</p>
+        <p style="margin-top: 0.5rem; opacity: 0.8;">
+            <a href="../blog.html">Blog</a> · 
+            <a href="../index.html#contact">Contact</a> · 
+            <a href="../index.html">Home</a>
+        </p>
+    </footer>
+</body>
+</html>
